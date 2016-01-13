@@ -507,3 +507,12 @@ alert .glyphicon{
     padding-bottom:5px
 }
 
+#page-content-wrapper a {
+  color: #2A5E9D;
+  text-decoration: none;
+}
+#page-content-wrapper a:hover,
+#page-content-wrapper a:focus {
+  color: #2A5E9D;
+  text-decoration: underline;
+}
