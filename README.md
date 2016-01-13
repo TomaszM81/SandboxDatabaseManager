@@ -1,4 +1,4 @@
-# SandboxDatabaseManager
+# Sandbox Database Manager
 
 ![guide1](https://github.com/mutobo/SandboxDatabaseManager/blob/master/ImagesForWiki/Main.jpg)  
 
