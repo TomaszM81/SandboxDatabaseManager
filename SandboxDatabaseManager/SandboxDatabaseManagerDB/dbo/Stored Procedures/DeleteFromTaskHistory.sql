@@ -1,0 +1,9 @@
+﻿CREATE PROCEDURE [dbo].[DeleteFromTaskHistory]
+(
+    @ID CHAR(36)
+)
+WITH EXECUTE AS OWNER
+AS
+SET NOCOUNT ON
+
+DELETE FROM dbo.TaskHistory WHERE ID = @ID

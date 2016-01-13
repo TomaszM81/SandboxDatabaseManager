@@ -1,0 +1,509 @@
+﻿body {
+    padding-top: 85px;
+    padding-bottom: 20px;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+
+
+td.details-control {
+    background: url('../Images/details_open.png') no-repeat center center;
+}
+ 
+tr.shown td.details-control {
+    background: url('../Images/details_close.png') no-repeat center center;
+}
+ 
+div.slider {
+    display: none;
+}
+ 
+table.dataTable tbody td.no-padding {
+    padding: 0;
+}
+
+/*#DatabaseServerFilter {
+    padding-top: 3px;
+    padding-bottom: 3px;
+}*/
+
+.filter-header td {
+    height: 32px;
+}
+
+.filter-header select {
+        padding-top: 3px;
+        padding-bottom: 3px;
+}
+
+div.filter-header
+{
+    width: 100%;
+    background-color:#eeeeee;/*#eeeeee;*/
+    padding:10px;
+}
+
+
+.filter-header select, input[type=text], textarea {
+   width: 300px;
+   max-width: 1000px;
+}
+
+.padd-10 {
+    padding-left: 10px;
+    padding-top: 10px;
+}
+
+.padd-10-left {
+    padding-left: 10px;
+}
+
+.btn-frontend {
+    padding: 4px 12px;
+    border-radius: 4px;
+    border: 1px solid transparent;
+    border-color: #cccccc;
+    min-width: 150px
+}
+
+
+
+
+.details-row:hover {
+    background-color: #ffffff;
+}
+
+table.details-row tr {
+    border-top: none;
+    border: 1px #ffffff;
+}
+
+div.details-row {
+    padding-left: 20px;
+}
+
+#details-row tbody tr:hover {
+    background-color: #ffffff;
+}
+
+#details-row td {
+    background-color: #ffffff;
+    border: none;
+    padding-left: 0px;
+}
+
+.no-padding:hover {
+    background-color: #ffffff;
+}
+
+.bold-content{
+    font-weight:  600;
+}
+
+.warning-list {
+    padding-top: 10px;
+    color: #E16500;
+    border: 1px solid #E16500;
+    background-color: #FFDC90;
+    margin-bottom: 10px;
+}
+
+.error-list {
+    padding-top: 10px;
+    color: #D00808;
+    border: 1px solid #D00808;
+    background-color: #FFA4A4;
+    margin-bottom: 10px;
+}
+
+
+
+
+/*#action-table-outer {
+    min-width: 800px;
+}*/
+
+#action-table-outer tbody tr:hover{
+    background-color: #ffffff;
+}
+
+  
+
+/*********************************action-table********************************/
+
+/*#action-table caption {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom: none;
+}
+
+#action-table {
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+
+}*/
+
+#action-table caption {
+    font-size: smaller;
+    font-weight:bold;
+    padding-top:5px;
+    background-color: #EEEEEE; /*#DDECFF; /*#DFDFFF;*/
+    
+
+    
+    padding-bottom:5px;
+    text-align:center;
+}
+
+#action-table th {
+    font-weight:normal;  
+    background-color: #EEEEEE;
+    font-size: small;
+    text-align:center;
+    padding:8px;
+
+}
+
+#action-table tbody tr {
+    border-bottom:1px solid #EEEEEE;
+}
+
+
+#action-table tbody tr  {
+    background-color: #EEEEEE;
+    text-align:left;
+    padding-left: 2px;     
+}
+
+#action-table td {
+  font-size: small;  
+  padding: 3px;
+}
+
+#action-table tbody tr:hover{
+    background-color:  #EEEEEE; /*#F2F2FF*/
+}
+
+/*********************************snapshot-table********************************/
+
+
+#snapshot-table caption {
+    font-size: smaller;
+    font-weight:bold;
+    padding-top:5px;
+    background-color: #EEEEEE;
+    padding-bottom:5px;
+    text-align:center;
+}
+
+#snapshot-table th {
+    font-weight:normal;  
+    background-color: #EEEEEE;
+    font-size: small;
+    text-align:center;
+    padding:8px;
+
+
+}
+
+#snapshot-table tbody tr {
+    border-bottom:1px solid #cccccc;
+    
+}
+
+#snapshot-table tbody tr  {
+    background-color: #EEEEEE;
+    text-align:left;
+    padding-left: 2px;    
+    
+    
+}
+
+#snapshot-table td {
+  font-size: small;  
+  padding: 3px;
+
+}
+
+#snapshot-table tbody tr:hover{
+    background-color: #F5F5F5
+}
+
+/********************************* other ********************************/
+.btn-frontend-action {
+    padding: 4px 12px;
+    border-radius: 4px;
+    border: 1px solid transparent;
+    border-color: #cccccc;
+    min-width: 170px;
+    font-size: small;
+}
+ 
+.btn-frontend-action-snapshot {
+    padding: 4px 12px;
+    border-radius: 4px;
+    border: 1px solid transparent;
+    border-color: #cccccc;
+    min-width: 155px;
+    font-size:small;
+
+}
+
+label {
+    color: #585858;
+}
+
+
+/********************************* search-header ********************************/
+
+.search-header td {
+    height: 32px;
+}
+.search-header table {
+   width: 100%;
+}
+
+.search-header td:first-child {
+   width: 1%;
+   white-space:nowrap;
+}
+
+
+.search-header select {
+        padding-top: 3px;
+        padding-bottom: 3px;
+}
+
+div.search-header
+{
+    width: 100%;
+    background-color:#eeeeee;/*#eeeeee;*/
+    padding:10px;
+}
+
+
+.search-header select, input[type=text], textarea {
+   width: 300px;
+   max-width: 1000px;
+}
+
+
+/********************************* search results ********************************/
+
+#search_result_database{
+    /*background-color: lightyellow;*/
+
+    white-space: nowrap;
+    
+    font-size: 12px;
+}
+
+
+#search_result_database td,#search_result_database th {
+    width:1%;
+    
+}
+
+#search_result_database table {
+        width:100%;
+}
+
+#search_result_data table{
+        width:100%;        
+}
+
+#search_result_data td, #search_result_data th
+{
+     /*background-color: #fff;*/
+     background-color:#EAEAEA;
+}
+
+#search_result_database * {
+    white-space: nowrap;
+    border: 1px solid black;
+    padding: 3px
+}
+
+#search_result_database td{
+    width: 1%;
+}
+
+/********************************* compare database result *************************/
+#compare_database_result   {
+    white-space: nowrap;
+    padding: 3px;
+    font-size: 12px;
+    
+}
+
+#compare_database_result th {
+    color: #585858;
+
+}
+
+
+#row_result * {
+       border: 1px solid #B4B4B4; 
+ }
+
+/*  #row_result - table with rows: row_result   */
+/*  .row_diff - class with column value difference  */
+
+.row_diff {
+    background-color : #A1CEFF;
+}
+
+
+/********************************* Track database changes result *************************/
+
+#track_database_result 
+{
+    white-space: nowrap;
+    padding: 3px;
+    font-size: 12px;
+}
+
+#track_database_result th {
+    color: #585858;
+
+}
+/*  #row_result - table with rows: row_result   */
+/*  .row_diff - class with column value difference  */
+
+#track_result * {
+       border: 1px solid #B4B4B4; 
+ }
+
+
+/************* Background tasks stats ******************/
+
+
+.background_stats {
+  position: relative;
+  float: right;
+  padding-top: 2px;
+  /*color: #3988CE;*/
+  padding-bottom: 5px;
+  padding-left: 0px;
+  padding-right: 5px;
+  height:80px;
+  /*width:135px;*/
+  width:250px;
+  margin-top:0px;
+  text-align:right;
+  font-size: 12.2px;
+  margin-left:0px;
+
+
+}
+
+.background_stats a {
+
+}
+
+.stats_running {
+  background-color: black;
+}
+
+.stats_success {
+  background-color: #00C300;
+}
+
+
+.stats_failed {
+  background-color: red;
+}
+
+/*********************************************************/
+
+.btn-hidden-link {
+    padding: 4px 12px;
+    border-radius: 4px;
+    border: 1px solid transparent;
+    border-color: #cccccc;
+    min-width: 150px
+}
+
+.btn-hidden-link:hover,
+.btn-hidden-link:focus {
+  text-decoration: none;
+}
+
+
+/************* My Tasks ****************/
+#tasks {
+    width:100%;
+}
+
+
+/******* Sandbox logo ***********/
+
+.logo_div {
+    display: inline-block;
+    vertical-align: middle;
+    text-align: center;
+}
+
+
+alert .glyphicon{
+    display:table-cell;
+}
+
+.alert div,
+.alert span{
+    padding-left: 5px;
+    display:table-cell;
+}
+
+.alert ul {
+    margin-top: 0px;
+}
+
+.alert{
+    margin-bottom: 10px
+}
+
+
+
+.container-fluid  a {
+    /*color: #3988CE;*/
+}
+
+
+.nav a:focus,
+.nav a:hover{
+  color: #23527c;
+  /*text-decoration: underline;*/
+}
+
+.backup-types td, .restore-options  td {
+    height:22px;
+    padding-right:5px;
+}
+.backup-types label, .restore-options  label {
+    font-weight:600;
+}
+
+.padd-5-top-bottom  {
+    padding-top:5px;
+    padding-bottom:5px
+}
+

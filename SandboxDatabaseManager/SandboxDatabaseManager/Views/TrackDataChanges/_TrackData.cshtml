@@ -1,0 +1,39 @@
+﻿@model  SandboxDatabaseManager.Models.ChangeTrackingDetails
+
+@if(Model.TrackDataChangesReslut != null && Model.TrackDataChangesReslut.Rows.Count > 0)
+{
+<br />
+
+<table id="track_database_result" class="display compact" cellspacing="0" style="width:100%">
+    <thead>
+        <tr>
+            <th>Table Name</th>
+            <th>Table Key Values</th>
+            <th>Revision</th>
+            <th>Row Change</th>
+            <th>Row Data</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (System.Data.DataRow row in Model.TrackDataChangesReslut.Rows)
+        {
+            <tr>
+                <td>@row["TableName"].ToString()</td>
+                <td>@row["TableKeyValues"].ToString()</td>
+                <td>@row["SYS_CHANGE_VERSION"].ToString()</td>
+                <td>@row["RowChangeType"].ToString()</td>
+                <td>@Html.Raw(row["RowData"].ToString())</td>
+            </tr>
+        }
+
+    </tbody>
+</table>
+}
+
+@if (!String.IsNullOrWhiteSpace(Model.TrackDataChangesLog))
+{
+<br />
+<div class="alert alert-info" role="alert">
+    @MvcHtmlString.Create(Model.TrackDataChangesLog)
+</div>
+}

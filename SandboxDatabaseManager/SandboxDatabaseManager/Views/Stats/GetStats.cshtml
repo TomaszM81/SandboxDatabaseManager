@@ -1,0 +1,131 @@
+﻿
+@{
+    ViewBag.Title = "GetStats";
+
+    System.Globalization.NumberFormatInfo nfi = new System.Globalization.NumberFormatInfo();
+    nfi.NumberDecimalSeparator = ".";
+    var count = ((System.Data.DataTable)ViewBag.CoutersData).Rows.Count;
+}
+
+<div style="text-align:center;font-weight:bold;">@ViewBag.ServerName  - @ViewBag.CounterName</div>
+@if (ViewBag.customRange == true)
+{
+    <div style="text-align:center;font-size:smaller;">@ViewBag.startDate - @ViewBag.endDate</div>
+}
+<div style="height:400px;" id="chartContainer" on></div>
+<br/>
+
+<div style="padding-left:25px;">
+    <label style="padding-bottom:5px;">Get counters data from range:</label>
+    <div style="padding-left:10px;" class="filter-header">
+        @*<label style="padding-bottom:7px;">Get counters data from range:</label>*@
+        @using (Html.BeginForm("GetStats", "Stats"))
+        {
+            @Html.Hidden("serverName", (string)ViewBag.ServerName)
+            @Html.Hidden("counterName", (string)ViewBag.CounterName)
+            @Html.Hidden("chartYAxisSufix", (string)ViewBag.ChartYAxisSufix)
+
+            <table>
+                <tr>
+                    <td><label for="startDate">Start Date</label></td>
+                    <td style="padding-left:5px;">
+                        <input id="startDate" name="startDate" type="text">
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="padding-top:5px;"><label for="endDate">End Date</label></td>
+                    <td style="padding-left:5px; padding-top:5px;">
+                        <input id="endDate" name="endDate" type="text">
+                    </td>
+                </tr>
+
+
+
+
+                <tr style="border-bottom:1px solid #cccccc;"><td colspan="100" style="height:6px"></td></tr>
+                <tr><td colspan="100" style="height:7px"></td></tr>
+                <tr>
+                    <td></td>
+                    <td class="padd-10-left" align="right" style="height:8px"><input type="submit" class="btn-frontend btn-default" value="Get Data" /></td>
+                </tr>
+            </table>
+        }
+    </div>
+</div>
+
+    <script type="text/javascript">
+
+
+
+
+        window.onload = function () {
+
+            var data =  [@for (int i = 0; i < ((System.Data.DataTable)ViewBag.CoutersData).Rows.Count; i++){string statsDatetime = ((DateTime)((System.Data.DataTable)ViewBag.CoutersData).Rows[i]["CounterValueDate"]).ToString("yyyy-MM-ddTHH:mm:ss.000"); double statsValue = (double)((System.Data.DataTable)ViewBag.CoutersData).Rows[i]["CounterValue"];<text>[new Date("@statsDatetime"),@statsValue.ToString("F2", nfi)]</text>if (((System.Data.DataTable)ViewBag.CoutersData).Rows.Count > (i+1)) {<text>,
+</text>}}];
+
+            jQuery('#startDate').datetimepicker(
+                {
+                    minDate:'@ViewBag.CounterDataMinDate',//yesterday is minimum date(for today use 0 or -1970/01/01)
+                    maxDate:'0',// today
+                    mask:true, // '9999/19/39 29:59' - digit is the maximum possible for a cell
+                }
+                );
+
+            jQuery('#endDate').datetimepicker(
+               {
+                   minDate:'@ViewBag.CounterDataMinDate',//yesterday is minimum date(for today use 0 or -1970/01/01)
+                   maxDate:'0', // today
+                   mask:true, // '9999/19/39 29:59' - digit is the maximum possible for a cell
+               }
+               );
+
+
+           graph = new Dygraph(
+
+            // containing div
+            document.getElementById("chartContainer"),
+             data,
+             {
+                 drawPoints: false,
+                 labels: [ "Time", "@ViewBag.CounterName @ViewBag.ChartYAxisSufix" ],
+                 ylabel: '@ViewBag.CounterName @ViewBag.ChartYAxisSufix',
+                 xlabel: 'Time',
+                 showRangeSelector: true,
+                 labelsDivStyles: { 'textAlign': 'right' },
+                 labelsDivWidth: 400,
+                 animatedZooms: true
+             }
+          );
+
+            @if(!ViewBag.endDateSpecified)
+        {
+         <text>
+            var tickerLocal = $.connection.monitoringHub; // the generated client-side hub proxy
+
+            // Add a client-side hub method that the server will call
+            tickerLocal.on('updatePerformanceCounterStats', function (countersData) {
+
+                var result = $.grep(countersData, function(e){ return e.ServerName == '@ViewBag.ServerName'; });
+                if (result.length == 1) {
+                    var resultCounter = $.grep(result[0].ListOfCounterValues, function(e){ return e.CounterFriendlyName == '@ViewBag.CounterName'; });
+                    if (resultCounter.length == 1) {
+
+                        if (data.length >= 360) {
+                            data.shift();
+                        }
+
+                        data.push([new Date(result[0].JsonDateTime), resultCounter[0].CounteValue.toFixed(2)]);
+                        graph.updateOptions({ 'file': data });
+
+                    }
+                }
+            });
+
+
+            </text>
+        }
+
+
+        }
+    </script>

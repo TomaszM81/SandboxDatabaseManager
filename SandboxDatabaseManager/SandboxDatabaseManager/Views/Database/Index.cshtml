@@ -1,0 +1,238 @@
+﻿@{
+    ViewBag.Title = "Available Databases";
+    AjaxOptions ajaxOpts = new AjaxOptions
+    {
+        UpdateTargetId = "databasesTable",
+        OnComplete = "OnCompleteDatabaseListPool",
+        OnBegin = "OnBegin"
+    };
+}
+
+@model System.Data.DataSet
+
+
+<table>
+    <tr>
+        <td style="padding-right:5px;">
+            <img src="~/Images/databases.svg" style="width:48px; height:48px;" />
+        </td>
+        <td style="padding-left:5px;">
+            <h4>Available Databases</h4>
+            <h5>Select from one of the available databases and create a copy/backup.</h5>
+        </td>
+    
+    </tr>
+</table>
+    <div class="filter-header">
+        @using (Ajax.BeginForm("GetDatabases", "Database", ajaxOpts))
+        {
+            <table>
+                <tr>
+                    <td><label for="DatabaseServerFilter">Filter by Database Server:</label></td>
+                    <td class="padd-10-left">
+                        @Html.DropDownList("DatabaseServerFilter", new SelectList((List<String>)ViewBag.DatabaseServerList
+                                        , ViewBag.PreselectedDatabaseServer))
+                    </td>
+                </tr>
+                <tr>
+                    <td><label for="DatabaseNameFilter">Filter by Database Name:</label></td>
+                    <td class="padd-10-left">@Html.TextBox("DatabaseNameFilter", (string)ViewBag.DatabaseSerachKey)</td>
+                </tr>
+                <tr style="border-bottom:1px solid #cccccc;"><td colspan="100" style="height:6px"></td></tr>
+                <tr><td colspan="100" style="height:7px"></td></tr>
+                <tr>
+                    <td></td>
+                    <td class="padd-10-left" align="right" style="height:8px"><input id="submit" type="submit" class="btn-frontend btn-default" value="List Databases" /></td>
+                </tr>
+            </table>
+        }
+    </div>
+    <br />
+    <div id="databasesTable">
+        @Html.Partial("_Databases", Model)
+    </div>
+    <script>
+
+
+      
+
+        var serversWithBackupPermission = [@for (int i = 0; i < @ViewBag.ServersWithBackupPermission.Count; i++){<text>"@ViewBag.ServersWithBackupPermission[i]"</text>if (@ViewBag.ServersWithBackupPermission.Count > (i+1)) {<text>,</text>}}];
+
+
+       
+
+
+        /* Formatting function for row details - modify as you need */
+        function format(d) {
+            // `d` is the original data object for the row
+            var result = '<div class="slider details-row">' +
+                 '<table id="details-row" cellspacing="0" border="0" width="100%">' +
+                     '<tr>' +
+                         '<td width="250"><label>Recovery Model:</label></td>' +
+                         '<td>' + d[10].replace(/\n/g, "<br />") + '</td>' +
+                     '</tr>' +
+                     '<tr>' +
+                         '<td width="250"><label>Database State:</label></td>' +
+                         '<td>' + d[11].replace(/\n/g, "<br />") + '</td>' +
+                     '</tr>' +
+                     '<tr>' +
+                         '<td width="250"><label>Database Comment:</label></td>' +
+                         '<td>' + d[9].replace(/\n/g, "<br />") + '</td>' +
+                     '</tr>' +
+                     '<tr>' +
+                         '<td width="250"><label>Restored From Backup File(s):</label></td>' +
+                         '<td>' + d[8].replace(/&lt;FileList&gt;/g, '').replace(/&lt;FilePath&gt;/g, '').replace(/&lt;\/FileList&gt;/g, '').replace(/&lt;\/FilePath&gt;/g, '<br />') + '</td>' +
+                     '</tr>' +
+                     '<tr style="border-top:1px solid #cccccc;"><td colspan="100%" style="padding: 0px; height:1px"></td></tr></table>' +
+
+                       //-----------------Sub Main Table-----------------------------
+
+                     '<table id="action-table-outer"><tr>' +
+                     '<td style="padding-left: 0px; padding-top:5px; vertical-align:top; width:1%">' +
+
+                     //-----------------Actions-----------------------------
+
+                     '<table id="action-table"><caption>Database Actions</caption>' +
+
+                     // Backup This Database
+                     '<tr><td>' +
+
+                     '<form action="Database/BackupGetDetails" method="POST">' +
+                     '<input type="hidden" name="Server" value="' + d[1] + '">' +
+                     '<input type="hidden" name="Database" value="' + d[3] + '">' +
+                     '<input type="hidden" name="DatabaseSize" value="' + d[4] + '">' +
+                     '<input type="submit" ';
+
+            if (jQuery.inArray(d[1], serversWithBackupPermission) < 0 || d[11] != 'ONLINE') {
+                         result += 'disabled="disabled" style="color:gray;" ';
+                     }
+                     result += 'class="btn-frontend-action btn-default" data-toggle="tooltip" data-placement="right" title="Create a compressed database backup of this database on one of the available servers." value="Backup This Database..." /></form>' +
+                     '</td></tr>' +
+                    
+                     // Copy This Database
+                     '<tr><td>' +
+                    
+                     '<form action="Database/CopyGetDetails" method="POST">' +
+                     '<input type="hidden" name="Server" value="' + d[1] + '">' +
+                     '<input type="hidden" name="Database" value="' + d[3] + '">' +
+                     '<input type="hidden" name="DatabaseSize" value="' + d[4] + '">' +
+                     '<input type="hidden" name="RecoveryModel" value="' + d[10] + '">' +
+                     '<input type="submit" ';
+                     if (d[11] != 'ONLINE') {
+                         result += 'disabled="disabled" style="color:gray;" ';
+                     }
+                     result += 'class="btn-frontend-action btn-default" data-toggle="tooltip" data-placement="right" title="Create a new copy of this database on one of the available servers." value="Copy This Database..." /></form>' +
+                    
+                     '</td></tr>' +
+                    
+                     '</td></tr></table></td>' +
+
+             //-----------------Right Column-----------------------------
+
+            '<td></td>' +
+
+
+            '</tr></table>' +
+            '</div>';
+
+
+            return result;
+        }
+
+        function prepareTable() {
+
+            /*Insert a 'details' column to the table */
+            var nCloneTh = document.createElement('th');
+            var nCloneTd = document.createElement('td');
+
+            nCloneTd.className = "details-control";
+
+            /* removal of this fixes the column headers */
+            $('#databases thead tr').each(function () {
+                this.insertBefore(nCloneTh, this.childNodes[0]);
+            });
+            $('#databases tbody tr').each(function () {
+                this.insertBefore(nCloneTd.cloneNode(true), this.childNodes[0]);
+            });
+
+
+
+            var table = $('#databases').DataTable({
+                "order": [[3, "asc"]],
+                "paging": false,
+                "info": false,
+                "columnDefs": [
+                {
+                    "targets": [0], //Details
+                    "visible": true,
+                    "searchable": false,
+                    "sortable": false,
+                    "width": "10px"
+                },
+                {
+                    "targets": [2], //ID
+                    "visible": false,
+                    "searchable": false
+                },
+                {
+                    "targets": [8], //Source Backup File Collection
+                    "visible": false,
+                    "searchable": false
+                },
+                {
+                    "targets": [9], //Comment
+                    "visible": false,
+                    "searchable": false
+                },
+                {
+                    "targets": [10], //RecoveryModel
+                    "visible": false,
+                    "searchable": false
+                },
+                {
+                    "targets": [11], //DatabaseState
+                    "visible": false,
+                    "searchable": false
+                }
+                ]
+            });
+
+            // Add event listener for opening and closing details
+            $('#databases tbody').on('click', 'td.details-control', function () {
+                var tr = $(this).closest('tr');
+                var row = table.row(tr);
+
+                if (row.child.isShown()) {
+                    // This row is already open - close it
+                    $('div.slider', row.child()).slideUp(function () {
+                        row.child.hide();
+                        tr.removeClass('shown');
+                    });
+                }
+                else {
+                    // Open this row
+                    row.child(format(row.data()), 'no-padding').show();
+                    tr.addClass('shown');
+
+                    $('div.slider', row.child()).slideDown();
+                }
+            });
+
+
+        }
+
+        function OnCompleteDatabaseListPool(request, status) {
+            $('#submit').val("List Databases");
+            prepareTable();
+        }
+
+        function OnBegin(request, status) {
+            $('#submit').val("Loading...");
+        }
+
+        $(prepareTable());
+
+       
+
+
+    </script>

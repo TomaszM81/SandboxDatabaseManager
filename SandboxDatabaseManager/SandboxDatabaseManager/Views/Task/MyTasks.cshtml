@@ -1,0 +1,75 @@
+﻿@model List<SandboxDatabaseManager.Tasks.IBgTask>
+
+@{
+    ViewBag.Title = "My Tasks";
+}
+
+<table>
+    <tr>
+        <td style="padding-right:5px;">
+            <img src="~/Images/tasks.svg" style="width:48px; height:48px;" />
+        </td>
+        <td style="padding-left:5px;">
+            <h4>Personal Background Tasks</h4>
+            <h5>Review your @ViewBag.TaskSubMessage 15 background tasks.</h5>
+        </td>
+
+    </tr>
+</table>
+<br/>
+<table id="tasks" class="display compact" style="width:100%">
+    <thead>
+        <tr>
+            <td>Name</td>
+            <td>Start Date</td>
+            <td>End Date</td>
+            <td>Duration</td>
+            <td>Status</td>
+            <td>Result</td>
+            <td>Remove</td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var task in Model)
+        {
+            <tr>
+                <td>@Html.ActionLink(task.Name, "GetProgress", new { taskGuid = task.ID, noRedirect = true })</td>
+                <td>@task.StartDate</td>
+                <td>@if (task.EndDate != default(DateTime)) {@task.EndDate}</td>
+                <td>@task.DurationString</td>
+                <td>@if (task.Status == SandboxDatabaseManager.Tasks.TaskStatus.Running){ <text>Running...</text> }else { @task.Status.ToString()}</td>
+                <td>@if (task.Status == SandboxDatabaseManager.Tasks.TaskStatus.Succeeded && task.Result != null) {@Html.ActionLink("View", task.RedirectToAction, task.RedirectToController, new { taskGuid = task.ID }, null)}</td>
+                <td>@if (task.Status > SandboxDatabaseManager.Tasks.TaskStatus.Running) { @Ajax.ActionLink("Remove", "RemoveTask", new { taskGuid = task.ID }, new AjaxOptions { HttpMethod = "Post", OnSuccess = "removeHandle", OnFailure = "errorHandle" })}</td>
+            </tr>
+        }
+    </tbody>
+</table>
+<script>
+
+        $(function () {
+
+            var table = $('#tasks').DataTable({
+                "order": [[2, "desc"]],
+                "paging": false,
+                "info": false
+            });
+
+        });
+
+        function errorHandle(data, tst, err) {
+            $("body").html(data.responseText);
+        }
+
+        function removeHandle(data, tst, err) {
+
+            var table1 = $('#tasks').DataTable();
+            var row = table1.row($(this).parents('tr'));
+            row.remove().draw();
+
+
+        }
+
+
+</script>
+
+

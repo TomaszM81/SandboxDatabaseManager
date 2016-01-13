@@ -1,0 +1,65 @@
+﻿@{
+    ViewBag.Title = "Compare Database Details";
+}
+
+
+@model System.Data.DataSet
+
+
+<table>
+    <tr>
+        <td style="padding-right:5px;">
+            <img src="~/Images/compare.svg" style="width:48px; height:48px;" />
+        </td>
+        <td style="padding-left:5px;">
+            <h4>Compare Database Details</h4>
+            <h5>Specify details of two databases on the same servers to take part in data compare procedure.</h5>
+        </td>
+
+    </tr>
+</table>
+<div class="alert alert-info" role="alert" >
+    <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+    <div>Data comparison will only report up to 100 rows from each table. Any tables that are both empty in each database, do not have primary key or have different schema will not be compared.<br/>
+    Following colum types will not be compared: image, text, ntext, timestamp, varchar(max), nvarchar(max), varbinary(max)</div>
+</div>
+@if (!@ViewData.ModelState.IsValid)
+{
+    @Html.ValidationSummary(false, "", new { @class = "alert alert-danger" })
+}
+<div class="filter-header">
+    @using (Html.BeginForm("Compare", "CompareDatabase"))
+    {
+        <table>
+            <tr>
+                <td><label for="DatabaseServerFilter">Database Server:</label></td>
+                <td class="padd-10-left">
+                    @Html.DropDownList("DatabaseServer", new SelectList((List<String>)ViewBag.DatabaseServerList, ViewBag.PreSelectedItem))
+                </td>
+            </tr>
+            <tr>
+                <td><label for="DatabaseNameToCompare">Database Name To Compare:</label></td>
+                <td class="padd-10-left">@Html.TextBox("DatabaseNameToCompare")</td>
+            </tr>
+            <tr>
+                <td><label for="DatabaseNameToCompareAgaints">Database Name To Compare Againts:</label></td>
+                <td class="padd-10-left">@Html.TextBox("DatabaseNameToCompareAgaints")</td>
+            </tr>
+            <tr>
+                <td><label for="MaxTableRowCount">Only compare tables with rowcount below:</label></td>
+                <td class="padd-10-left">@Html.TextBox("MaxTableRowCount")</td>
+            </tr>
+            <tr>
+                <td><label for="ListOfTablesToCompare">List of tables to compare:</label></td>
+                <td class="padd-10-left">@Html.TextBox("ListOfTablesToCompare", null, new { data_toggle = "tooltip", data_placement = "right", title = "List of comma separated table names that can also contain partial table names.", style="width:500px"})</td>
+            </tr>
+            <tr style="border-bottom:1px solid #cccccc;"><td colspan="100" style="height:6px"></td></tr>
+            <tr><td colspan="100" style="height:7px"></td></tr>
+            <tr>
+                <td></td>
+                <td class="padd-10-left" align="right" style="height:8px"><input type="submit" class="btn-frontend btn-default" value="Compare" /></td>
+            </tr>
+        </table>
+    }
+</div>
+

@@ -1,0 +1,45 @@
+﻿@{
+    ViewBag.Title = "Compare Database Results";
+}
+
+@model System.Data.DataTable
+
+<h4>Compare Database Results</h4>
+<h5>@ViewBag.Message</h5>
+
+
+@if(Model != null)
+{
+    <table id="compare_database_result" class="display compact" cellspacing="0" style="width:100%">
+        <thead>
+            <tr>
+                <th>Table Name</th>
+                <th>Table Key Values</th>
+                <th>Row Compare Result</th>
+                <th>Row Data</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(System.Data.DataRow row in Model.Rows)
+            {
+                <tr>
+                    <td>@row["TableName"].ToString()</td>
+                    <td>@MvcHtmlString.Create(row["TableKeyValues"].ToString())</td>
+                    <td>@row["RowDifferenceType"].ToString()</td>
+                    <td>@Html.Raw(row["RowData"].ToString())</td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+}
+<script>
+    $(function () {
+
+        var table = $('#compare_database_result').DataTable({
+            "order": [[0, "asc"]],
+            "paging": false,
+            "info": false
+        });
+    });
+</script>

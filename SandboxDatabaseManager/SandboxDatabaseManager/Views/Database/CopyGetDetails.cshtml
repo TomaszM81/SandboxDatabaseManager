@@ -1,0 +1,98 @@
+﻿@model SandboxDatabaseManager.Models.CopyDatabaseDetails
+
+@{
+    ViewBag.Title = "Copy Database Details";
+}
+
+
+
+<h4>Copy Database Details</h4>
+<h5>Provide details for your database copy.</h5>
+@if (!String.IsNullOrWhiteSpace((string)ViewBag.WarningMessage))
+{
+    <div class="alert alert-warning data-valmsg-summary="true">
+        <ul>
+            <li>@ViewBag.WarningMessage</li>
+        </ul>
+    </div>
+}
+@if(!@ViewData.ModelState.IsValid)
+{
+    @Html.ValidationSummary(false, "", new { @class = "alert alert-danger" })
+}
+@*class="alert alert-danger" role="alert"*@
+    <div class="filter-header">
+        @using (Html.BeginForm("Copy", "Database"))
+        {
+
+            @*@Html.HiddenFor(x => x.LastWarningMessage)*@
+            <input id="LastWarningMessage" name="LastWarningMessage" type="hidden" value="@Model.LastWarningMessage">
+            @Html.HiddenFor(x => x.SourceDatabaseServer)
+            @Html.HiddenFor(x => x.SourceDatabaseName)
+            @Html.HiddenFor(x => x.SourceDatabaseSizeGB)
+            <table>
+                <tr>
+                    <td><label>Source Database Server:</label></td>
+                    <td class="padd-10-left">@Model.SourceDatabaseServer</td>
+                </tr>
+                <tr>
+                    <td><label>Source Database Name:</label></td>
+                    <td class="padd-10-left">@Model.SourceDatabaseName</td>
+                </tr>
+                <tr>
+                    <td><label>Source Recovery Model:</label></td>
+                    <td class="padd-10-left">@Model.SourceDatabaseRecoveryModel</td>
+                </tr>
+                <tr>
+                    <td><label>Source Database Size (GB):</label></td>
+                    <td class="padd-10-left">@Model.SourceDatabaseSizeGB</td>
+                </tr>
+                <tr>
+                    <td><label for="TargetDatabaseServer">Target Database Server:</label></td>
+                    <td class="padd-10-left">@Html.DropDownListFor(m => m.TargetDatabaseServer, new SelectList(ViewBag.RestorePermissionServerList, "Value", "Text", @Model.TargetDatabaseServer))</td>
+                </tr>
+                <tr>
+                    <td><label for="TargetDatabaseName">Target Database Name:</label></td>
+                    <td class="padd-10-left">@Html.EditorFor(model => model.TargetDatabaseName)
+                    <td>
+                </tr>
+                <tr>
+                    <td><label for="RecoveryModelChangeToSimple">Change Recovery To Simple:</label></td>
+                    <td class="padd-10-left">@Html.CheckBox("RecoveryModelChangeToSimple", @Model.RecoveryModelChangeToSimple)
+                    <td>
+                </tr>
+                <tr>
+                    <td><label for="DatabaseComment">Database Comment:</label></td>
+                    <td class="padd-10-left">
+                        @Html.TextAreaFor(model => model.DatabaseComment, new { ID = "DatabaseComment", rows = 3, style="margin-top: 1px;"})
+                <td>
+                </tr>
+                <tr style="border-bottom:1px solid #cccccc;"><td colspan="100" style="height:6px"></td></tr>
+                <tr><td colspan="100" style="height:7px"></td></tr>
+                <tr>
+                    <td></td>
+                    <td class="padd-10-left" align="right" style="height:8px"><input type="submit" class="btn-frontend btn-default" value="Copy Database" /></td>
+                </tr>
+            </table>
+        }
+    </div>
+<script>
+    var serversWithDefaultRecoveryToSimple = [@for (int i = 0; i < @ViewBag.ServersWithDefaultRecoveryToSimple.Count; i++){<text>"@ViewBag.ServersWithDefaultRecoveryToSimple[i]"</text>if (@ViewBag.ServersWithDefaultRecoveryToSimple.Count > (i+1)) {<text>,</text>}}];
+
+
+    $('#TargetDatabaseServer').on('change', function () {
+
+        if (jQuery.inArray(this.value, serversWithDefaultRecoveryToSimple) >= 0) {
+            $("#RecoveryModelChangeToSimple").prop("checked", true);
+        } else {
+            $("#RecoveryModelChangeToSimple").prop("checked", false);
+        }
+
+      
+    });
+
+</script>
+
+
+
+

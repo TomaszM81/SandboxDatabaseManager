@@ -1,0 +1,58 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SandboxDatabaseManagerServiceTester", "SandboxDatabaseManagerServiceTester\SandboxDatabaseManagerServiceTester.csproj", "{73D7DE18-F234-4590-BC78-0B8E81897E54}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SandboxDatabaseManagerService", "SandboxDatabaseManagerService\SandboxDatabaseManagerService.csproj", "{4DF10432-A698-4001-BA65-F6D089BCEC85}"
+EndProject
+Project("{6141683F-8A12-4E36-9623-2EB02B2C2303}") = "SandboxDatabaseManagerServiceInstaller", "SandboxDatabaseManagerServiceInstaller\SandboxDatabaseManagerServiceInstaller.isproj", "{EB71891D-C557-4938-8E54-4F68E6D4C04F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4DF10432-A698-4001-BA65-F6D089BCEC85} = {4DF10432-A698-4001-BA65-F6D089BCEC85}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		CD_ROM|Any CPU = CD_ROM|Any CPU
+		Debug|Any CPU = Debug|Any CPU
+		DVD-5|Any CPU = DVD-5|Any CPU
+		Release|Any CPU = Release|Any CPU
+		SingleImage|Any CPU = SingleImage|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{73D7DE18-F234-4590-BC78-0B8E81897E54}.CD_ROM|Any CPU.ActiveCfg = Release|Any CPU
+		{73D7DE18-F234-4590-BC78-0B8E81897E54}.CD_ROM|Any CPU.Build.0 = Release|Any CPU
+		{73D7DE18-F234-4590-BC78-0B8E81897E54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73D7DE18-F234-4590-BC78-0B8E81897E54}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73D7DE18-F234-4590-BC78-0B8E81897E54}.DVD-5|Any CPU.ActiveCfg = Debug|Any CPU
+		{73D7DE18-F234-4590-BC78-0B8E81897E54}.DVD-5|Any CPU.Build.0 = Debug|Any CPU
+		{73D7DE18-F234-4590-BC78-0B8E81897E54}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73D7DE18-F234-4590-BC78-0B8E81897E54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73D7DE18-F234-4590-BC78-0B8E81897E54}.SingleImage|Any CPU.ActiveCfg = Release|Any CPU
+		{73D7DE18-F234-4590-BC78-0B8E81897E54}.SingleImage|Any CPU.Build.0 = Release|Any CPU
+		{4DF10432-A698-4001-BA65-F6D089BCEC85}.CD_ROM|Any CPU.ActiveCfg = Release|Any CPU
+		{4DF10432-A698-4001-BA65-F6D089BCEC85}.CD_ROM|Any CPU.Build.0 = Release|Any CPU
+		{4DF10432-A698-4001-BA65-F6D089BCEC85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DF10432-A698-4001-BA65-F6D089BCEC85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DF10432-A698-4001-BA65-F6D089BCEC85}.DVD-5|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DF10432-A698-4001-BA65-F6D089BCEC85}.DVD-5|Any CPU.Build.0 = Debug|Any CPU
+		{4DF10432-A698-4001-BA65-F6D089BCEC85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DF10432-A698-4001-BA65-F6D089BCEC85}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4DF10432-A698-4001-BA65-F6D089BCEC85}.SingleImage|Any CPU.ActiveCfg = Release|Any CPU
+		{4DF10432-A698-4001-BA65-F6D089BCEC85}.SingleImage|Any CPU.Build.0 = Release|Any CPU
+		{EB71891D-C557-4938-8E54-4F68E6D4C04F}.CD_ROM|Any CPU.ActiveCfg = CD_ROM
+		{EB71891D-C557-4938-8E54-4F68E6D4C04F}.CD_ROM|Any CPU.Build.0 = CD_ROM
+		{EB71891D-C557-4938-8E54-4F68E6D4C04F}.Debug|Any CPU.ActiveCfg = DVD-5
+		{EB71891D-C557-4938-8E54-4F68E6D4C04F}.Debug|Any CPU.Build.0 = DVD-5
+		{EB71891D-C557-4938-8E54-4F68E6D4C04F}.DVD-5|Any CPU.ActiveCfg = DVD-5
+		{EB71891D-C557-4938-8E54-4F68E6D4C04F}.DVD-5|Any CPU.Build.0 = DVD-5
+		{EB71891D-C557-4938-8E54-4F68E6D4C04F}.Release|Any CPU.ActiveCfg = SingleImage
+		{EB71891D-C557-4938-8E54-4F68E6D4C04F}.Release|Any CPU.Build.0 = SingleImage
+		{EB71891D-C557-4938-8E54-4F68E6D4C04F}.SingleImage|Any CPU.ActiveCfg = SingleImage
+		{EB71891D-C557-4938-8E54-4F68E6D4C04F}.SingleImage|Any CPU.Build.0 = SingleImage
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

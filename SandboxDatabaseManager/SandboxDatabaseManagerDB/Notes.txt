@@ -1,0 +1,2 @@
+1. remove collations from create database statement
+2. add SET NOEXEC OFF; at the beginning of the script

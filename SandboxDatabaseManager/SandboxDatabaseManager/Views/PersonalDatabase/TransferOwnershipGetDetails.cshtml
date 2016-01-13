@@ -1,0 +1,42 @@
+﻿@model SandboxDatabaseManager.Models.TransferOwnershipData
+
+@{
+    ViewBag.Title = "Transfer Database Ownership";
+}
+
+<h4>Transfer Database Ownership</h4>
+<h5>Transfer ownership of your database to another user.</h5>
+<div class="filter-header">
+    @using (Html.BeginForm("TransferOwnership", "PersonalDatabase"))
+    {
+
+      
+        @Html.HiddenFor(x => x.DatabaseServer)
+        @Html.HiddenFor(x => x.DatabaseName)
+        <table>
+            <tr>
+                <td><label>Database Server:</label></td>
+                <td class="padd-10-left">@Model.DatabaseServer</td>
+            </tr>
+            <tr>
+                <td><label>Database Name:</label></td>
+                <td class="padd-10-left">@Model.DatabaseName</td>
+            </tr>
+            <tr>
+                <td><label for="TargetDatabaseServer">Transfer Database To User:</label></td>
+                <td class="padd-10-left">@Html.DropDownListFor(m => m.NewDatabaseOwner, new SelectList(ViewBag.UserList, User.Identity.Name))</td>
+            </tr>
+            <tr style="border-bottom:1px solid #cccccc;"><td colspan="100%" style="height:6px"></td></tr>
+            <tr><td colspan="100%" style="height:7px"></td></tr>
+            <tr>
+                <td></td>
+                <td class="padd-10-left" align="right" style="height:8px"><input type="submit" class="btn-frontend btn-default" value="Transfer" /></td>
+            </tr>
+        </table>
+    }
+</div>
+
+
+
+
+

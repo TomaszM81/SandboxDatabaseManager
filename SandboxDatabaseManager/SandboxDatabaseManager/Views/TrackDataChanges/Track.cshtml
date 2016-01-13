@@ -1,0 +1,126 @@
+﻿@model  SandboxDatabaseManager.Models.ChangeTrackingDetails
+
+@{
+    ViewBag.Title = "Track Data Changes";
+    AjaxOptions ajaxOpts = new AjaxOptions
+    {
+        UpdateTargetId = "trackDataTable",
+        OnComplete = "OnCompleteTrackDataPool",
+        OnBegin = "OnBegin"
+    };
+}
+<table>
+    <tr>
+        <td style="padding-right:5px;">
+            <img src="~/Images/database-icon.png">
+        </td>
+        <td>
+            <h4>Track Data Changes</h4>
+            <h5>Track data changes on your database.</h5>
+        </td>
+    </tr>
+</table>
+<div class="alert alert-info" role="alert">
+    <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+    <div>
+        Changes in tables without primary key will not be reported. Values from colums types: image, text, ntext, timestamp, varchar(max), nvarchar(max), varbinary(max), will not be returned.
+    </div>
+</div>
+<div class="filter-header" style="margin-bottom: 10px;">
+    @using (Html.BeginForm("Enable", "TrackDataChanges"))
+    {
+        @Html.HiddenFor(x => x.DatabaseName)
+        @Html.HiddenFor(x => x.DatabaseServer)
+        <table width="100%">
+            <tr>
+                <td>Change Tracking is disabled by default and must be enabled for each table. Use this function to initially enable Change Tracking on your database or to add tracking capability to any new table that might be missing it.</td>
+                <td class="padd-10-left" align="right" style="height:8px; text-align:right;"><input type="submit" class="btn-frontend btn-default" value="Enable Tracking" /></td>
+            </tr>
+        </table>
+    }
+</div>
+@if (ViewBag.ChangeTrackingEnabled)
+{
+
+    <div class="filter-header">
+        @using (Ajax.BeginForm("GetTrackData", "TrackDataChanges",ajaxOpts))
+        {
+
+            @Html.HiddenFor(x => x.DatabaseName)
+            @Html.HiddenFor(x => x.DatabaseServer)
+
+            <table>
+                <tr>
+                    <td><label for="DatabaseServer">Database Server:</label></td>
+                    <td class="padd-10-left">@Model.DatabaseServer</td>
+                </tr>
+                <tr>
+                    <td><label for="DatabaseName">Database Name:</label></td>
+                    <td class="padd-10-left">@Model.DatabaseName</td>
+                </tr>
+                <tr>
+                    <td><label for="ListOfTablesToCompare">List of tables to include:</label></td>
+                    <td class="padd-10-left">@Html.TextBox("ListOfTablesToCompare", null, new { data_toggle = "tooltip", data_placement = "right", title = "List of comma separated table names that can also contain partial table names.", style = "width:500px" })</td>
+                </tr>
+                <tr>
+                    <td><label for="ShowChangesFromRevision">Show changes since revision:</label></td>
+                    <td class="padd-10-left">@Html.TextBox("ShowChangesFromRevision", @Model.ShowChangesFromRevision.HasValue ? @Model.ShowChangesFromRevision.Value : 0, new { type = "number", data_toggle = "tooltip", data_placement = "right", title = "Data changes are tracked by revisions starting with revision 0 when You enabled the functionality.</br>Each transaction will increase the initial revision." })
+                    @Html.ActionLink("Get Current Revision", "GetLatestRevision", new { DatabaseName = Model.DatabaseName, DatabaseServer = Model.DatabaseServer }, new { @class = "btn-hidden-link btn-default", id = "GetLatestRevision" })
+                    </td>
+                </tr>
+                <tr style="border-bottom:1px solid #cccccc;"><td colspan="100" style="height:6px"></td></tr>
+                <tr><td colspan="100" style="height:7px"></td></tr>
+                <tr>
+                    <td></td>
+                    <td class="padd-10-left" align="right" style="height:8px"><input id="submit" type="submit" class="btn-frontend btn-default" value="Show Changes" /></td>
+                </tr>
+            </table>
+        }
+    </div>
+    <div id="trackDataTable">
+        @Html.Partial("_TrackData", Model)
+    </div>
+    <script>
+        function prepareTable() {
+
+            var table = $('#track_database_result').DataTable({
+                "order": [[0, "asc"]],
+                "paging": false,
+                "info": false
+            });
+
+            $("#GetLatestRevision").click(function (e) {
+                e.preventDefault(); // this will prevent from submitting the form.
+
+
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("GetLatestRevision", "TrackDataChanges")',
+                    data: { DatabaseName: "@Model.DatabaseName", DatabaseServer: "@Model.DatabaseServer" },
+                    dataType: "json",
+                    success: function (result) {
+
+                        $("#ShowChangesFromRevision").val(result);
+                        document.activeElement.blur(); // remove the active marker from button
+
+                    }
+                });
+
+
+            });
+        }
+
+        function OnCompleteTrackDataPool(request, status) {
+            $('#submit').val("Show Changes");
+            prepareTable();
+        }
+
+        function OnBegin(request, status) {
+            $('#submit').val("Loading...");
+        }
+
+        $(prepareTable());
+
+    </script>
+
+}

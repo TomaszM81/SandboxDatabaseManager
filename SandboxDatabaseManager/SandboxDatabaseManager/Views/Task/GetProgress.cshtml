@@ -1,0 +1,163 @@
+﻿@model SandboxDatabaseManager.Tasks.IBgTask
+
+@{
+    ViewBag.Title = "Task Progress";
+}
+
+@{string outputText = Model.OutputText;}
+
+<table>
+    <tr>
+        <td colspan="100"><H4>@Model.Name</H4></td>
+    </tr>
+    @if (Model.SupportsAbort && (SandboxDatabaseManager.Tasks.TaskStatus)ViewBag.Status == SandboxDatabaseManager.Tasks.TaskStatus.Running)
+    { 
+    <tr>
+        <td colspan="100" style="padding-top:5px">@Html.ActionLink("Request Abort", "RequestAbort", null, new { id = "abort" })</td>
+    </tr>
+    }
+    <tr><td colspan="100" style="padding-top:5px"/></tr>
+    <tr>
+        <td colspan="100" style="padding:0px">
+            <table>
+                <tr>
+                    <td><label>Start Date:</label></td>
+                    <td style ="padding-left:5px">@Model.StartDate</td>
+                </tr>
+                @if (Model.Finished)
+                {
+                    <tr>
+                        <td><label>End Date:</label></td>
+                        <td style="padding-left:5px">@Model.EndDate</td>
+                    </tr>
+                }
+                <tr>
+                    <td><label>Duration:</label></td>
+                    <td style="padding-left:5px"><div id="duration">@Model.DurationString</div></td>
+                </tr>
+
+            </table>
+        </td>
+    </tr>
+    <tr><td colspan="100" style="padding-top:5px"></tr>
+    <tr><td style="height:4px"></td></tr>
+    <tr>
+        <td width="32">
+            @switch ((SandboxDatabaseManager.Tasks.TaskStatus)ViewBag.Status)
+            {
+                case SandboxDatabaseManager.Tasks.TaskStatus.NotStarted:
+                    <img id="status" src="~/Images/notstarted.png">
+                    break;
+                case SandboxDatabaseManager.Tasks.TaskStatus.Running:
+                    <img id="status" src="~/Images/running.gif">
+                    break;
+                case SandboxDatabaseManager.Tasks.TaskStatus.Succeeded:
+                    <img id="status" src="~/Images/ok.png">
+                    break;
+                case SandboxDatabaseManager.Tasks.TaskStatus.Failed:
+                    <img id="status" src="~/Images/error.png">
+                    break;
+                case SandboxDatabaseManager.Tasks.TaskStatus.Aborted:
+                    <img id="status" src="~/Images/abort.png">
+                    break;
+            }
+        </td>
+        <td style="padding-left: 10px" width="100%">
+            @if ((SandboxDatabaseManager.Tasks.TaskStatus)ViewBag.Status == SandboxDatabaseManager.Tasks.TaskStatus.Running)
+            {
+                <label id="statusname">Running...</label>
+            }
+            else
+            {
+                <label id="statusname">@(((SandboxDatabaseManager.Tasks.TaskStatus)ViewBag.Status).ToString())</label>
+            }
+                                                                                                      
+        </td>
+    </tr>
+    <tr><td style="height:4px"></td></tr>
+    <tr><td colspan="100" style="padding-top:5px"></tr>
+    <tr>
+        <td colspan="100">
+            <textarea id="output" readonly rows="37" style="width:100%; font-size:smaller;font-family:Consolas">@outputText</textarea>
+        </td>
+    </tr>
+</table>
+<script>
+    @if ((SandboxDatabaseManager.Tasks.TaskStatus)ViewBag.Status == SandboxDatabaseManager.Tasks.TaskStatus.Running)
+    {<text>
+
+    $(document).ready(function () {
+        $('#abort').click(function (e) {
+            e.preventDefault();
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("RequestAbort", "Task")',
+                    data: { taskGuid: "@Model.ID" },
+                    success: function ()
+                    {
+                        $('#abort').fadeOut();
+                    }
+                });
+
+        });
+
+
+        var fetch = setInterval(checkprogress, 2000);
+
+
+        var skipOutput = @outputText.Length.ToString();
+
+        function checkprogress() {
+
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetTaskProgress", "Task")',
+                data: { taskGuid: "@Model.ID", skipOutput: skipOutput },
+                dataType: "json",
+                success: function (result)
+                {
+                    $('#duration').text(result.duration);
+                    $('#statusname').text(result.status);
+                    $('#output').append(result.output);
+                    $("#output").animate({
+                        scrollTop:$("#output")[0].scrollHeight - $("#output").height()
+                    },0);
+
+                    skipOutput += result.output.length;
+
+                    if (result.status == "Aborted") {
+                        $("#status").attr("src", "../Images/abort.png");
+                        clearInterval(fetch);
+                    } else if (result.status == "Succeeded") {
+                        $("#status").attr("src", "../Images/ok.png");
+                        clearInterval(fetch);
+
+
+                        if(result.hasOwnProperty("redirectToAction") && result.hasOwnProperty("redirectToController") && result.redirectToAction.length > 0 && result.redirectToController.length > 0) {
+
+                            var url = "../" + result.redirectToController + "/" + result.redirectToAction + "/?taskGuid=@Model.ID";
+                            window.location.href = url;
+                        }
+
+
+                    } else if (result.status == "Failed") {
+                        $("#status").attr("src", "../Images/error.png");
+                                    clearInterval(fetch);
+                                }
+                            },
+                error: function (response) {
+
+                            }
+                        });
+
+
+
+        };
+
+
+
+    });
+
+    </text>}
+</script>
+

@@ -1,0 +1,34 @@
+﻿@model SandboxDatabaseManager.Models.BackupFilesResult
+
+@if (@Model != null && @Model.BackupFiles != null && @Model.BackupFiles.Rows.Count > 0)
+{
+<table id="databases" class="display compact" cellspacing="0" style="width:100%">
+    <thead>
+        <tr>
+            @foreach (System.Data.DataColumn column in @Model.BackupFiles.Columns)
+            {
+                <th>@column.ColumnName</th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (System.Data.DataRow row in @Model.BackupFiles.Rows)
+        {
+            <tr>
+                @foreach (System.Data.DataColumn column2 in @Model.BackupFiles.Columns)
+                {
+                    <td>@row[@column2.ColumnName].ToString()</td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>
+}
+
+@if (Model != null && !String.IsNullOrWhiteSpace(Model.InfoMessage))
+{
+    <br />
+    <div class="alert alert-info" role="alert">
+        @MvcHtmlString.Create(Model.InfoMessage.Replace(Environment.NewLine, "<br/>"))
+    </div>
+}

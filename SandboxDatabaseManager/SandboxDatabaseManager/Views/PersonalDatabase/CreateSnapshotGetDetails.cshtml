@@ -1,0 +1,56 @@
+﻿@model SandboxDatabaseManager.Models.CreateSnapshotDetails
+
+@{
+    ViewBag.Title = "Create Database Snapshot Details";
+}
+
+
+
+<h4>Create Database Snapshot Details</h4>
+<h5>Provide a name for your database snapshot.</h5>
+@if (!String.IsNullOrWhiteSpace((string)ViewBag.WarningMessage))
+{
+    <div class="alert alert-warning data-valmsg-summary=" true">
+        <ul>
+            <li>@ViewBag.WarningMessage</li>
+        </ul>
+    </div>
+}
+@if (!@ViewData.ModelState.IsValid)
+{
+    @Html.ValidationSummary(false, "", new { @class = "alert alert-danger" })
+}
+    <div class="filter-header">
+        @using (Html.BeginForm("CreateSnapshot", "PersonalDatabase"))
+        {
+            <input id="LastWarningMessage" name="LastWarningMessage" type="hidden" value="@Model.LastWarningMessage">
+            @Html.HiddenFor(x => x.DatabaseName)
+            @Html.HiddenFor(x => x.DatabaseServer)
+            <table>
+                <tr>
+                    <td><label>Database Server:</label></td>
+                    <td class="padd-10-left">@Model.DatabaseServer</td>
+                </tr>
+                <tr>
+                    <td><label>Database Name:</label></td>
+                    <td class="padd-10-left">@Model.DatabaseName</td>
+                </tr>
+                <tr>
+                    <td><label for="DatabaseSnapshotName">Database Snapshot Name:</label></td>
+                    <td class="padd-10-left">@Html.EditorFor(model => model.DatabaseSnapshotName)
+                    <td>
+                </tr>
+                <tr style="border-bottom:1px solid #cccccc;"><td colspan="100%" style="height:6px"></td></tr>
+                <tr><td colspan="100%" style="height:7px"></td></tr>
+                <tr>
+                    <td></td>
+                    <td class="padd-10-left" align="right" style="height:8px"><input type="submit" class="btn-frontend btn-default" value="Create Database Snapshot" /></td>
+                </tr>
+            </table>
+        }
+    </div>
+
+
+
+
+

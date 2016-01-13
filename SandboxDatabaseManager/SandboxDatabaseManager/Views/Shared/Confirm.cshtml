@@ -1,0 +1,37 @@
+﻿@model System.Web.Mvc.FormCollection
+
+@{
+    ViewBag.Title = "Please Confirm";
+}
+
+<h4>Please confirm</h4>
+<table>
+    <tr>
+        <td> 
+            @MvcHtmlString.Create(((string)ViewBag.ConfirmMessage).Replace(Environment.NewLine, "<br />"))
+        </td>
+    </tr>
+    <tr style="text-align:right">
+        <td style="padding-top:10px">
+            <table>
+                <tr>
+                    <td>
+                        @using (Html.BeginForm((string)ViewBag.YesRedirectAction, (string)ViewBag.YesRedirectController))
+                        {
+                            foreach (var item in Model.AllKeys)
+                            {
+                                @Html.Hidden(item, (string)Model[item]);
+                            }
+                            <input type="submit" class="btn-frontend btn-default" value="Yes" />
+                        }
+                    </td>
+                    <td style="padding-left: 5px;">
+                        <button class=" btn-frontend btn-default" onclick="location.href='@Url.Action(ViewBag.NoRedirectAction, ViewBag.NoRedirectController)';return false;">
+                            No
+                        </button>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>

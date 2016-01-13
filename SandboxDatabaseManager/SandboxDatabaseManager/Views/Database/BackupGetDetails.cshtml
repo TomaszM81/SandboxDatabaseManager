@@ -1,0 +1,152 @@
+﻿@model SandboxDatabaseManager.Models.BackupDatabaseDetails
+
+@{
+    ViewBag.Title = "Backup Database Details";
+}
+
+
+
+<h4>Backup Database Details</h4>
+<h5>Provide details for your database backup.</h5>
+@if (!@ViewData.ModelState.IsValid)
+{
+    @Html.ValidationSummary(false, "", new { @class = "alert alert-danger" })
+}
+<div class="filter-header">
+    @using (Html.BeginForm("Backup", "Database"))
+    {
+
+        @Html.HiddenFor(x => x.SourceDatabaseServer)
+        @Html.HiddenFor(x => x.SourceDatabaseName)
+        @Html.HiddenFor(x => x.SourceDatabaseSizeGB)
+        @Html.HiddenFor(x => User.Identity.Name)
+        <table>
+            <tr>
+                <td><label>Source Database Server:</label></td>
+                <td class="padd-10-left">@Model.SourceDatabaseServer</td>
+            </tr>
+            <tr>
+                <td><label>Source Database Name:</label></td>
+                <td class="padd-10-left">@Model.SourceDatabaseName</td>
+            </tr>
+            <tr>
+                <td><label>Source Database Size (GB):</label></td>
+                <td class="padd-10-left">@Model.SourceDatabaseSizeGB</td>
+            </tr>
+            @if (((bool?)ViewBag.HasOverwriteBackupDestinationPermission).HasValue && (((bool?)ViewBag.HasOverwriteBackupDestinationPermission).Value))
+            {
+                <tr>
+                    <td><label for="IsOverride">Override Backup Destination:</label></td>
+                    <td class="padd-10-left"><input id="IsOverride" type="checkbox" name="IsOverride" value="true">
+                    <td>
+                </tr>
+            }
+            <tr>
+                <td><label for="FileDescription">Backup File Description:</label></td>
+                <td class="padd-10-left"><input id="FileDescription" type="text" name="FileDescription">
+                <td>
+            </tr>
+            <tr>
+                <td><label for="BackupFileName">Backup File Name:</label></td>
+                <td class="padd-10-left"><input style="width: 700px; color: #808080; background-color: #EBEBE4;" id="BackupFileName" readonly="readonly" type="text" name="BackupFileName">
+                <td>
+            </tr>
+            <tr>
+                <td><label for="BackupComment">Backup Comment:</label></td>
+                <td class="padd-10-left">
+                    @Html.TextAreaFor(model => model.BackupComment, new { ID = "BackupComment", rows = 2, style = "margin-top: 1px; width: 700px;" })
+                <td>
+            </tr>
+            <tr>
+                <td><label for="BackupServer">Backup Destination:</label></td>
+                <td class="padd-10-left">@Html.DropDownListFor(m => m.BackupServer, new SelectList(ViewBag.RestorePermissionServerList, "Value", "Text", @Model.BackupServer))</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td class="padd-10-left">@Html.TextBoxFor(model => model.BackupDestinationPath, new { style = "width: 700px; color: #808080; background-color: #EBEBE4;", @readonly = "readonly", ID = "BackupDestinationPath" })<td>
+            </tr>
+            <tr style="border-bottom:1px solid #cccccc;"><td colspan="100" style="height:6px"></td></tr>
+            <tr><td colspan="100" style="height:7px"></td></tr>
+            <tr>
+                <td></td>
+                <td class="padd-10-left" align="right" style="height:8px;"><input type="submit" class="btn-frontend btn-default" value="Backup Database" /></td>
+            </tr>
+            </table>
+    }
+</div>
+<script>
+    function paddValue(param) {
+        return ('' + param).length < 2 ? '0' + param : '' + param;
+    };
+
+    function getISODateTime(d) {
+        return d.getFullYear() +
+            paddValue(d.getMonth() + 1) +
+            paddValue(d.getDate()) + '_' +
+            paddValue(d.getHours()) +
+            paddValue(d.getMinutes()) +
+            paddValue(d.getSeconds());
+    };
+
+    function regenerateFileName() {
+
+        var database = $('#SourceDatabaseName').val();
+        var server = $('#SourceDatabaseServer').val().replace('\\','#');
+        var date = getISODateTime(new Date());
+        var userName = $('#User_Identity_Name').val();
+        var description = jQuery.trim($('#FileDescription').val());
+        var index = userName.lastIndexOf("\\");
+        if (index > -1) {
+            userName = userName.substring(index + 1);
+        }
+        var newValue = database + '.' + server + '.' + date + '.' + userName;
+
+        if (description.length > 0) {
+            newValue += '.' + description;
+        }
+        newValue += '.bak'
+
+        $("#BackupFileName").val(newValue);
+
+
+    };
+
+
+    $("#FileDescription").on('input propertychange paste', function () {
+        regenerateFileName();
+    });
+
+    $('#BackupServer').on('change', function () {
+        $('#BackupDestinationPath').val(jQuery.parseJSON(this.value).BackupDatabaseNetworkSharePath);
+    });
+
+    $("#IsOverride").change(function () {
+        $("#BackupFileName").attr("readonly", !this.checked);
+        $("#BackupDestinationPath").attr("readonly", !this.checked);
+
+        if(this.checked)
+        {
+            $("#BackupFileName").attr("style","width: 700px;");
+            $("#BackupDestinationPath").attr("style","width: 700px;");
+        }else
+        {
+            $("#BackupFileName").attr("style", "width: 700px; color: #808080; background-color: #EBEBE4;");
+            $("#BackupDestinationPath").attr("style", "width: 700px; color: #808080; background-color: #EBEBE4;");
+        }
+    });
+
+    $(document).ready(function () {
+        regenerateFileName();
+
+
+    });
+
+</script>
+
+
+
+
+
+
+
+

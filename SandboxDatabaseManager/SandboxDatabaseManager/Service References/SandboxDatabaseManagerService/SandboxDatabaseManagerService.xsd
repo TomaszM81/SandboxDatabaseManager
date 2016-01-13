@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/SandboxDatabaseManagerService" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/SandboxDatabaseManagerService" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:complexType name="PerformanceCounterResults">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="ResultList" nillable="true" type="tns:ArrayOfPerformanceCounterResults.PerformanceCounterResult" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="PerformanceCounterResults" nillable="true" type="tns:PerformanceCounterResults" />
+  <xs:complexType name="ArrayOfPerformanceCounterResults.PerformanceCounterResult">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="PerformanceCounterResults.PerformanceCounterResult" nillable="true" type="tns:PerformanceCounterResults.PerformanceCounterResult" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfPerformanceCounterResults.PerformanceCounterResult" nillable="true" type="tns:ArrayOfPerformanceCounterResults.PerformanceCounterResult" />
+  <xs:complexType name="PerformanceCounterResults.PerformanceCounterResult">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="ChartYAxisSufix" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="CounteValue" type="xs:float" />
+      <xs:element minOccurs="0" name="CounterFriendlyName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="DotNetFormatString" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Warning" type="xs:boolean" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="PerformanceCounterResults.PerformanceCounterResult" nillable="true" type="tns:PerformanceCounterResults.PerformanceCounterResult" />
+</xs:schema>

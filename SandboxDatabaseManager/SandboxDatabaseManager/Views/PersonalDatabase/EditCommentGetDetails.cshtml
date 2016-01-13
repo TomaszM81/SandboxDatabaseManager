@@ -1,0 +1,48 @@
+﻿@model SandboxDatabaseManager.Models.EditCommentData
+
+@{
+    ViewBag.Title = "Edit Database Comment";
+}
+
+
+
+<h4>Edit Database Comment</h4>
+<h5>Change your database comment.</h5>
+
+<div class="filter-header">
+    @using (Html.BeginForm("EditComment", "PersonalDatabase"))
+    {
+        @Html.HiddenFor(x => x.DatabaseServer)
+        @Html.HiddenFor(x => x.DatabaseName)
+        <table>
+            <tr>
+                <td><label>Database Server:</label></td>
+                <td class="padd-10-left">@Model.DatabaseServer</td>
+            </tr>
+            <tr>
+                <td><label>Database Name:</label></td>
+                <td class="padd-10-left">@Model.DatabaseName</td>
+            </tr>
+            <tr>
+                <td><label for="DatabaseComment">Database Comment:</label></td>
+                <td class="padd-10-left">
+                    @Html.TextAreaFor(model => model.DatabaseComment, new { ID = "DatabaseComment", rows = 3, style = "margin-top: 1px;" })
+                <td>
+            </tr>
+            <tr style="border-bottom:1px solid #cccccc;"><td colspan="100%" style="height:6px"></td></tr>
+            <tr><td colspan="100%" style="height:7px"></td></tr>
+            <tr>
+                <td></td>
+                <td class="padd-10-left" align="right" style="height:8px"><input type="submit" class="btn-frontend btn-default" value="Save" /></td>
+            </tr>
+        </table>
+    }
+</div>
+
+
+
+
+
+
+
+

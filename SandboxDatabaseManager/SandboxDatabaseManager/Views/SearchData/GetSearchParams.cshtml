@@ -1,0 +1,81 @@
+﻿@{
+    ViewBag.Title = "Search Data";
+}
+
+@model System.Data.DataSet
+
+<script src="~/Scripts/codemirror-3.01/codemirror.js"></script>
+<link rel=stylesheet href="~/Content/codemirror-3.01/codemirror.css">
+<link rel=stylesheet href="~/Content/codemirror-3.0/theme/neat.css">
+<script src="~/Scripts/codemirror-3.0/mode/sql.js"></script>
+<style>
+    .CodeMirror {
+  border: 1px solid #1C1C1C;
+}
+</style>
+
+<table>
+    <tr>
+        <td style="padding-right:5px;">
+            <img src="~/Images/search.svg" style="width:48px; height:48px;" />
+        </td>
+        <td style="padding-left:5px;">
+            <h4>Search Data</h4>
+            <h5>Search for a database with specific data</h5>
+        </td>
+
+    </tr>
+</table>
+<div class="search-header">
+    @using (Html.BeginForm("Search", "SearchData"))
+    {
+        <table>
+            <tr>
+                <td><label for="DatabaseServerFilter">Search on Database Server:</label></td>
+                <td class="padd-10-left">
+                    @Html.DropDownList("DatabaseServerFilter", new SelectList((List<String>)ViewBag.DatabaseServerList
+                                        , ViewBag.PreselectedDatabaseServer))
+                </td>
+            </tr>
+            <tr>
+                <td><label for="DatabaseNameFilter">Search on Database Name:</label></td>
+                <td class="padd-10-left">@Html.TextBox("DatabaseNameFilter", (string)ViewBag.DatabaseSerachKey, new { @data_toggle = "tooltip", @data_placement = "top", title = "Specify partial Database Name, search engine will interpret this as %{value}%" })</td>
+            </tr>
+            <tr>
+                <td style="vertical-align:top; padding-top: 4px;"><label for="SqlStatement">SQL Search Statement:</label></td>
+                <td class="padd-10-left" style="padding-top: 4px;">@Html.TextArea("SqlStatement", (string)ViewBag.SqlStatement, new { rows = "30", style = "width:100%; border: 1px solid black;", ID = "SqlStatement" })</td>
+            </tr>
+            <tr style="border-bottom:1px solid #cccccc;"><td colspan="100" style="height:6px"></td></tr>
+            <tr><td colspan="100" style="height:7px"></td></tr>
+            <tr>
+                <td></td>
+                <td class="padd-10-left" align="right" style="height:8px"><input type="submit" class="btn-frontend btn-default" value="Search" /></td>
+            </tr>
+        </table>
+    }
+</div>
+
+<script>
+window.onload = function() {
+
+    var mime = 'text/x-mssql';
+
+    // get mime type
+    if (window.location.href.indexOf('mime=') > -1) {
+        mime = window.location.href.substr(window.location.href.indexOf('mime=') + 5);
+    }
+
+    window.editor = CodeMirror.fromTextArea(document.getElementById('SqlStatement'), {
+        mode: mime,
+        indentWithTabs: true,
+        smartIndent: true,
+        lineNumbers: true,
+        matchBrackets: true,
+        autofocus: true,
+        
+        theme: 'neat'
+    });
+
+};
+</script>
+

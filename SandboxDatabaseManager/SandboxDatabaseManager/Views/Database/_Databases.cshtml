@@ -1,0 +1,27 @@
+﻿
+@model System.Data.DataSet
+
+@if (Model != null && Model.Tables.Count > 0)
+{
+    <table id="databases" class="display compact" cellspacing="0" style="width:100%">
+        <thead>
+            <tr>
+                @foreach (System.Data.DataColumn column in @Model.Tables["Databases"].Columns)
+                {
+                    <th>@column.ColumnName</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (System.Data.DataRow row in @Model.Tables["Databases"].Rows)
+            {
+                <tr>
+                    @foreach (System.Data.DataColumn column2 in @Model.Tables["Databases"].Columns)
+                    {
+                        <td>@row[@column2.ColumnName].ToString()</td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+}

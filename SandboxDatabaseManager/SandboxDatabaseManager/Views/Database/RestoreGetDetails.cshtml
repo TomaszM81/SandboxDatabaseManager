@@ -1,0 +1,175 @@
+﻿@model SandboxDatabaseManager.Models.RestoreDatabaseModel
+
+@{
+    ViewBag.Title = "Restore Database Details";
+}
+
+
+
+<h4>Restore @(Model.BackupType == "Database" ? "Database" : "File") Details</h4>
+<h5>Provide details for your restore operation.</h5>
+@if (!String.IsNullOrWhiteSpace((string)ViewBag.WarningMessage))
+{
+    <div class="alert alert-warning data-valmsg-summary=" true">
+        <ul>
+            <li>@ViewBag.WarningMessage</li>
+        </ul>
+    </div>
+}
+@if (!@ViewData.ModelState.IsValid)
+{
+    @Html.ValidationSummary(false, "", new { @class = "alert alert-danger" })
+}
+<div class="filter-header">
+    @using (Html.BeginForm("Restore", "Database"))
+    {
+        <input id="LastWarningMessage" name="LastWarningMessage" type="hidden" value="@Model.LastWarningMessage">
+        @Html.HiddenFor(x => x.BackupFileList)
+        @Html.HiddenFor(x => x.RecoveryModel)
+        @Html.HiddenFor(x => x.BackupServerName)
+        @Html.HiddenFor(x => x.BackupDatabaseName)
+        @Html.HiddenFor(x => x.PositinInFileCollection)
+        @Html.HiddenFor(x => x.BackupDate)
+        @Html.HiddenFor(x => x.BackupType)
+        @Html.HiddenFor(x => x.BackupDatabaseSizeGB)
+        @Html.HiddenFor(x => x.DatabaseBackupLSN)
+        @Html.HiddenFor(x => x.CheckpointLSN)
+        @Html.HiddenFor(x => x.FirstLSN)
+        @Html.HiddenFor(x => x.LastLSN)
+        @Html.HiddenFor(x => x.SQLServerVersion)
+        @Html.HiddenFor(x => x.LocationName)
+
+
+        <table>
+            <tr>
+                <td><label>Original Database Server:</label></td>
+                <td class="padd-10-left">@Model.BackupServerName</td>
+            </tr>
+            <tr>
+                <td><label>Original Database Name:</label></td>
+                <td class="padd-10-left">@Model.BackupDatabaseName</td>
+            </tr>
+             <tr>
+                 <td><label>Original Recovery Model:</label></td>
+                 <td class="padd-10-left">@Model.RecoveryModel</td>
+             </tr>
+            <tr>
+                <td><label>Backup File List:</label></td>
+                <td class="padd-10-left">@Html.Raw(Html.Encode(Model.BackupFileList.Replace("</FilePath>", "\n").Replace("</FileList>", "").Replace("<FilePath>", "").Replace("<FileList>", "")).Replace("\n", "<br/>"))</td>
+            </tr>
+            <tr>
+                <td><label>Backup File List Position:</label></td>
+                <td class="padd-10-left">@Model.PositinInFileCollection</td>
+            </tr>
+            <tr>
+                <td><label>Backup Date:</label></td>
+                <td class="padd-10-left">@Model.BackupDate</td>
+            </tr>
+            <tr>
+                <td><label>Backup Type:</label></td>
+                <td class="padd-10-left">@Model.BackupType</td>
+            </tr>
+
+
+            @if (Model.BackupType == "Database")
+            {
+                <tr>
+                    <td><label>Backup Database Size (GB):</label></td>
+                    <td class="padd-10-left">@Model.BackupDatabaseSizeGB</td>
+                </tr>
+            }
+            @if (Model.BackupType == "Database Differential")
+            {
+                <tr>
+                    <td><label>Database Backup LSN:</label></td>
+                    <td class="padd-10-left">@Model.DatabaseBackupLSN</td>
+                </tr>
+            }
+            @if (Model.BackupType == "Transaction Log")
+            {
+                <tr>
+                    <td><label>First LSN:</label></td>
+                    <td class="padd-10-left">@Model.FirstLSN</td>
+                </tr>
+            }
+            @if (Model.BackupType == "Transaction Log" || Model.BackupType == "Database Differential")
+            {
+                <tr>
+                    <td><label>Last LSN:</label></td>
+                    <td class="padd-10-left">@Model.LastLSN</td>
+                </tr>
+            }
+            <tr>
+                <td><label for="TargetDatabaseServer">Target Database Server:</label></td>
+                <td class="padd-10-left">@Html.DropDownListFor(m => m.TargetDatabaseServer, new SelectList(ViewBag.RestorePermissionServerList, "Value", "Text", @Model.TargetDatabaseServer))</td>
+            </tr>
+            <tr>
+                <td><label for="TargetDatabaseName">Target Database Name:</label></td>
+                <td class="padd-10-left">@Html.EditorFor(model => model.TargetDatabaseName)
+                <td>
+            </tr>
+
+            <tr>
+                <td><label for="RecoveryModelChangeToSimple">Restore Options:</label></td>
+                <td class="padd-10-left padd-5-top-bottom">
+                    <table style="line-height: 15px;" class="restore-options">
+                        <tr><td>@Html.CheckBox("RecoveryModelChangeToSimple", @Model.RecoveryModelChangeToSimple)</td><td><label for="RecoveryModelChangeToSimple">Change Recovery To Simple</label></td></tr>
+                        <tr><td>@Html.CheckBox("RestoreWithRecovery", @Model.RestoreWithRecovery)</td><td><label for="RestoreWithRecovery">Restore With Recovery</label></td></tr>
+
+                    </table>
+                <td>
+            </tr>
+
+            @if (Model.BackupType == "Database")
+            {
+                <tr>
+                    <td><label for="DatabaseComment">Database Comment:</label></td>
+                    <td class="padd-10-left">
+                        @Html.TextAreaFor(model => model.DatabaseComment, new { ID = "DatabaseComment", rows = 3, style = "margin-top: 1px;" })
+                    <td>
+                </tr>
+            }
+            <tr style="border-bottom:1px solid #cccccc;"><td colspan="100" style="height:6px"></td></tr>
+            <tr><td colspan="100" style="height:7px"></td></tr>
+            <tr>
+                <td></td>
+                <td class="padd-10-left" align="right" style="height:8px"><input type="submit" class="btn-frontend btn-default" value="@(Model.BackupType == "Database" ? "Restore Database" : "Restore File")" /></td>
+            </tr>
+        </table>
+    }
+</div>
+<script>
+    var serversWithDefaultRecoveryToSimple = [@for (int i = 0; i < @ViewBag.ServersWithDefaultRecoveryToSimple.Count; i++){<text>"@ViewBag.ServersWithDefaultRecoveryToSimple[i]"</text>if (@ViewBag.ServersWithDefaultRecoveryToSimple.Count > (i+1)) {<text>,</text>}}];
+
+
+    $('#TargetDatabaseServer').on('change', function () {
+
+        if (jQuery.inArray(this.value, serversWithDefaultRecoveryToSimple) >= 0) {
+            $("#RecoveryModelChangeToSimple").prop("checked", true);
+        } else {
+            $("#RecoveryModelChangeToSimple").prop("checked", false);
+        }
+    });
+
+
+    $("#RecoveryModelChangeToSimple").change(function () {
+
+        if (this.checked) {
+            $("#RestoreWithRecovery").prop("checked", true);
+        }
+
+    });
+
+    $("#RestoreWithRecovery").change(function () {
+
+        if (!this.checked) {
+            $("#RecoveryModelChangeToSimple").prop("checked", false);
+        }
+
+    });
+
+</script>
+
+
+
+

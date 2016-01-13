@@ -1,0 +1,67 @@
+﻿@{
+    ViewBag.Title = "Search Results";
+}
+
+@model System.Data.DataSet
+
+<h4>Search Results</h4>
+<h5>Search Sql Statement:</h5>
+<div class="alert alert-info" role="alert">
+    <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+    <div>
+        @Html.Raw(Html.Encode(ViewBag.UsedSearchSqlStatement).Replace(Environment.NewLine, "<br />"))
+    </div>
+</div>
+<h5>Results:</h5>
+@if (@Model != null && @Model.Tables["Databases"].Rows.Count > 0)
+{
+    foreach (System.Data.DataRow row in @Model.Tables["Databases"].Rows)
+    {
+        <table id="search_result_database">
+            <thead>
+                <tr>
+                    @foreach (System.Data.DataColumn column in @Model.Tables["Databases"].Columns)
+                    {
+                        <th>@column.ColumnName</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+
+                <tr>
+                    @foreach (System.Data.DataColumn column2 in @Model.Tables["Databases"].Columns)
+                    {
+                        <td>@row[column2.ColumnName].ToString()</td>
+                    }
+                </tr>
+                <tr>
+                    <td colspan="100">
+
+                        <table id="search_result_data">
+                            <thead>
+                                <tr>
+                                    @foreach (System.Data.DataColumn column in @Model.Tables[String.Format("[{0}].[{1}]", row["Server Name"], row["Database Name"])].Columns)
+                                    {
+                                        <th>@column.ColumnName</th>
+                                    }
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (System.Data.DataRow rowInner in @Model.Tables[String.Format("[{0}].[{1}]", row["Server Name"], row["Database Name"])].Rows)
+                                {
+                                    <tr>
+                                       @foreach (System.Data.DataColumn column in @Model.Tables[String.Format("[{0}].[{1}]", row["Server Name"], row["Database Name"])].Columns)
+                                       {    
+                                            <td>@rowInner[column.ColumnName].ToString()</td>
+                                       }
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <br/>
+    }
+}

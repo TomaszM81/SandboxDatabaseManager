@@ -1,0 +1,74 @@
+﻿@model SandboxDatabaseManager.Models.FileCopyDetails
+
+@{
+    ViewBag.Title = "Copy File Details";
+}
+
+<h4>Copy File Details</h4>
+<h5>Provide details for your file copy operation.</h5>
+@*<div class="alert alert-info" role="alert">
+    <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+    <div>
+        Data comparison will only report up to 100 rows from each table. Any tables that are both empty in each database, do not have primary key or have different schema will not be compared.<br />
+        Following colum types will not be compared: image, text, ntext, timestamp, varchar(max), nvarchar(max), varbinary(max)
+    </div>
+</div>*@
+@if (!@ViewData.ModelState.IsValid)
+{
+    @Html.ValidationSummary(false, "", new { @class = "alert alert-danger" })
+}
+<div class="filter-header">
+    @using (Html.BeginForm("CopyFiles", "CopyFiles"))
+    {
+        <table>
+            <tr>
+                <td><label for="SourceLocation">Source Location:</label></td>
+                <td class="padd-10-left" style="min-width:700px;">@Html.DropDownListFor(m => m.SourceLocation, new SelectList(ViewBag.CopyFileLocations, "Value", "Text", Model.SourceLocation))</td>
+            </tr>
+            <tr>
+                <td><label for="SourceLocation">Source Location Path:</label></td>
+                <td class="padd-10-left"><div id="Source"></div></td>
+            </tr>
+            <tr>
+                <td><label>Source Location Sub Path:</label></td>
+                <td class="padd-10-left">@Html.TextBoxFor(m => m.SourceSubPath, new { data_toggle = "tooltip", data_placement = "right", title = "The sub path can use wildcards to identify files like (*.*)" })</td>
+            </tr>
+            <tr>
+                <td><label for="BackupServerDestinationLocation">Destinatin Location:</label></td>
+                <td class="padd-10-left">@Html.DropDownListFor(m => m.DestinationLocation, new SelectList(ViewBag.CopyFileLocations, "Value", "Text", Model.DestinationLocation))</td>
+        </tr>
+        <tr>
+            <td><label for="SourceLocation">Destinatin Location Path:</label></td>
+            <td class="padd-10-left"><div id="Destination"></div></td>
+        </tr>
+            <tr style="border-bottom:1px solid #cccccc;"><td colspan="100" style="height:6px"></td></tr>
+            <tr><td colspan="100" style="height:7px"></td></tr>
+            <tr>
+                <td></td>
+                <td class="padd-10-left" align="right" style="height:8px;"><input type="submit" class="btn-frontend btn-default" value="Copy Files" /></td>
+            </tr>
+        </table>
+    }
+    </div>
+    <script>
+
+        
+
+
+        $('#SourceLocation').on('change', function () {
+            $('#Source').text(this.value);
+        });
+
+        $('#DestinationLocation').on('change', function () {
+            $('#Destination').text(this.value);
+        });
+
+        $(function () {
+
+            $('#Source').text($('#SourceLocation').val());
+            $('#Destination').text($('#DestinationLocation').val());
+
+        });
+
+
+    </script>

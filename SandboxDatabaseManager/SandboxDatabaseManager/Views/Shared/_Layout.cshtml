@@ -1,0 +1,147 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Sandbox Database Manager</title>
+    <link rel="shortcut icon" href="@Url.Content("~/favicon.ico")" type="image/x-icon" />
+    <link rel="icon" href="@Url.Content("~/favicon.ico")" type="image/x-icon" />
+    @Styles.Render("~/Content/css")
+    <link href="~/Content/DataTables-1.10.9/media/css/jquery.dataTables.css" rel="stylesheet">
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/jquery")
+    <script src="~/Scripts/DataTables-1.10.9/media/js/jquery.dataTables.min.js"></script>
+
+</head>
+@{ 
+
+    Dictionary<SandboxDatabaseManager.Tasks.TaskStatus, int> stats = new Dictionary<SandboxDatabaseManager.Tasks.TaskStatus, int>();
+    stats.Add(SandboxDatabaseManager.Tasks.TaskStatus.Running, 0);
+    stats.Add(SandboxDatabaseManager.Tasks.TaskStatus.Failed, 0);
+    stats.Add(SandboxDatabaseManager.Tasks.TaskStatus.Succeeded, 0);
+
+    List<SandboxDatabaseManager.Worker.BackgroundTasksStatsSender.BackgroundTasksStat> tasks;
+    if(SandboxDatabaseManager.Worker.BackgroundTasksStatsSender.Instance.Stats.TryGetValue(User.Identity.Name, out tasks))
+    {
+        lock (tasks)
+        {
+            foreach (var item in tasks.GroupBy(item => item.Status).ToList())
+            {
+                stats[item.Key] = item.Count();
+            }
+        }
+    }
+    
+}
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <a href="#menu-toggle" class="sidebar-toggle" id="menu-toggle">
+            <span id="glyphicon_monitor" class="glyphicon glyphicon-menu-left"></span>
+        </a>
+            <div class="background_stats">
+                 <div style="margin-top:2px;">Hello, @User.Identity.Name</div>
+                 <div style="margin-top:2px;"><a href="~/Task/MyTasks/?status=Running">Running tasks
+                 @if (stats[SandboxDatabaseManager.Tasks.TaskStatus.Running] > 0)
+                 {<span id="Running" class="badge stats_running">@stats[SandboxDatabaseManager.Tasks.TaskStatus.Running]</span>}
+                 else
+                 {<span id="Running" class="badge">0</span> }
+                 </a>
+                 </div>
+                 <div style="margin-top:2px;"><a href="~/Task/MyTasks/?status=Succeeded">Succeeded tasks
+                 @if (stats[SandboxDatabaseManager.Tasks.TaskStatus.Succeeded] > 0)
+                 {<span id="Succeeded" class="badge stats_success">@stats[SandboxDatabaseManager.Tasks.TaskStatus.Succeeded]</span>}
+                 else
+                 {<span id="Succeeded" class="badge">0</span> }
+                 </a>
+                 </div>
+                 <div style="margin-top:2px;"><a href="~/Task/MyTasks/?status=Failed">Failed tasks 
+                 @if (stats[SandboxDatabaseManager.Tasks.TaskStatus.Failed] > 0)
+                 {<span id="Failed" class="badge stats_failed">@stats[SandboxDatabaseManager.Tasks.TaskStatus.Failed]</span>}
+                 else
+                 {<span id="Failed" class="badge">0</span> }
+                 </a>
+                 </div>
+            </div>
+            <div style="height:35px; padding-left:40px;padding-top:5px; background-color:transparent;">
+                <div class="logo_div"><img src="~/Images/SandboxDatabaseManager.svg" style="width:22px; height:22px; float:left;" /></div>
+                <div class="logo_div"><span style="font-variant: small-caps; font-weight: 700; font-size:22px;">Sandbox Database Manager</span>@*<span style="font-size:8px;"> by TriggerTeam</span>*@</div>
+            </div>
+            <div style="padding-left:200px; min-width:1125px;">
+                <ul class="nav nav-tabs">
+
+                    <li class="@(ViewContext.RouteData.Values["Controller"].ToString() == "Database" && ViewContext.RouteData.Values["Action"].ToString() == "Index" ? "active" : "")">@Html.ActionLink("Databases", "Index", "Database")</li>
+                    <li class="@(ViewContext.RouteData.Values["Controller"].ToString() == "BackupFiles" && ViewContext.RouteData.Values["Action"].ToString() == "Index" ? "active" : "")">@Html.ActionLink("Backup Files", "Index", "BackupFiles")</li>
+                    <li class="@(ViewContext.RouteData.Values["Controller"].ToString() == "SearchData" && ViewContext.RouteData.Values["Action"].ToString() == "GetSearchParams" ? "active" : "")">@Html.ActionLink("Search Data", "GetSearchParams", "SearchData")</li>
+                    <li class="@(ViewContext.RouteData.Values["Controller"].ToString() == "CompareDatabase" && ViewContext.RouteData.Values["Action"].ToString() == "GetCompareDetails" ? "active" : "")">@Html.ActionLink("Compare Database", "GetCompareDetails", "CompareDatabase")</li>
+                    <li class="@(ViewContext.RouteData.Values["Controller"].ToString() == "PersonalDatabase" && ViewContext.RouteData.Values["Action"].ToString() == "Index" ? "active" : "")">@Html.ActionLink("Personal Databases", "Index", "PersonalDatabase")</li>
+                    <li class="@(ViewContext.RouteData.Values["Controller"].ToString() == "Task" && ViewContext.RouteData.Values["Action"].ToString() == "MyTasks" ? "active" : "")">@Html.ActionLink("Personal Tasks", "MyTasks", "Task")</li>
+                    <li class="@(ViewContext.RouteData.Values["Controller"].ToString() == "About" && ViewContext.RouteData.Values["Action"].ToString() == "About" ? "active" : "")">@Html.ActionLink("About", "About", "About")</li>
+
+                    
+                </ul>
+                @*<p class="nav navbar-text navbar-right">Hello, @User.Identity.Name!</p>*@
+            </div>
+</div>
+
+    <div id="wrapper">
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper">
+            <ul class="sidebar-nav">
+                @foreach (var item in SandboxDatabaseManager.Worker.MonitoringBackgroundWorker.Instance.MyMonitoredServers)
+                {
+                    var statsServer = SandboxDatabaseManager.Worker.MonitoringBackgroundWorker.Instance.CurrentStats.FirstOrDefault(itemInner => itemInner.ServerName == item.Item1);
+                    if (statsServer != null)
+                    {
+                       <li>
+                        <table id="@item.Item1" class="stats" >
+                        <tr><th colspan="3">@statsServer.ServerName</th></tr>
+                        @foreach (var counterValue in statsServer.ListOfCounterValues)
+                        {
+                            if (counterValue.IsWarning)
+                            {
+                                <tr><td>@Html.ActionLink(counterValue.CounterFriendlyName + ":", "GetStats", "Stats", new { serverName = statsServer.ServerName, counterName = counterValue.CounterFriendlyName, chartYAxisSufix = counterValue.ChartYAxisSufix }, null)</td><td><font color="#FF0000">@counterValue.CounterFormattedValue</font></td></tr>
+                            }
+                            else
+                            {
+                                <tr><td>@Html.ActionLink(counterValue.CounterFriendlyName + ":", "GetStats", "Stats", new { serverName = statsServer.ServerName, counterName = counterValue.CounterFriendlyName, chartYAxisSufix = counterValue.ChartYAxisSufix }, null)</td><td>@counterValue.CounterFormattedValue</td></tr>
+                            }
+
+
+                        }
+                       </table>
+                       </li>
+
+                    }
+                }
+            </ul>
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+        </div>
+        <!-- /#sidebar-wrapper -->
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+                        @RenderBody()
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /#page-content-wrapper -->
+    </div>
+    <!-- /#wrapper -->
+
+
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+    <!--Reference the autogenerated SignalR hub script. -->
+    <script type="text/javascript" src="~/signalr/hubs"></script>
+    <script>
+        var basepath = '@Url.Content("~/")'
+    </script>
+</body>
+</html>
