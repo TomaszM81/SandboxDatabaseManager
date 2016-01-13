@@ -1,5 +1,7 @@
 # SandboxDatabaseManager
 
+![guide1](https://github.com/mutobo/SandboxDatabaseManager/blob/master/ImagesForWiki/Main.jpg)  
+
 ### What for
 
 If you are actively developing or maintaining software based on SQL Server databases chances are your team is wasting time on tedious database tasks. Developers need to periodically refresh their sandbox databases from backups after trial functionality tests. Your databases might be complex making it hard for everyone to understand and learn about internal data processes. Database Administrators are busy copying and setting up security for new databases requested by various departments in your organization. For all of those and many more scenarios **Sandbox Database Manager** might prove a huge time saver.
