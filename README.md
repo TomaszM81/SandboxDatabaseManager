@@ -13,6 +13,16 @@ If you are actively developing or maintaining software based on SQL Server datab
 
 Full documentation and user guide at [Wiki Documentation](https://github.com/mutobo/SandboxDatabaseManager/wiki).
 
-##Collaborators
+##Contributors
 
 <strong>Sandbox Database Manager</strong> has been created out of passion by<span style="color: #2a5e9d;"> <strong><a style="color: #2a5e9d;" href="https://www.linkedin.com/in/tomasz-moska-32a4b15">Tomasz Moska</a></strong></span>.
+
+
+## Donation
+
+
+## License
+
+**Sandbox Database Manager** is released under the [MIT License][opensource].
+
+[opensource]: http://www.opensource.org/licenses/MIT
