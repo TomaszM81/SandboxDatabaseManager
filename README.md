@@ -10,13 +10,13 @@ If you are actively developing or maintaining software based on SQL Server datab
 
 **Sandbox Database Manager** is a web application that serves as a fronted for all your database servers. From one central web location users will be able to copy databases from server to server, search and restore from backup files across all locations, search for data across all servers and all databases, backup databases to configured locations, create and use Database Snapshots to revert database changes, track data changes on databases, compare database data, monitor servers. All those features are implemented with security in mind and you will be able to configure access to each server and functionality at user level.
 
-
-Full documentation and user guide at [Wiki Documentation](https://github.com/mutobo/SandboxDatabaseManager/wiki).
-
 ##Contributors
 
 <strong>Sandbox Database Manager</strong> has been created out of passion by<span style="color: #2a5e9d;"> <strong><a style="color: #2a5e9d;" href="https://www.linkedin.com/in/tomasz-moska-32a4b15">Tomasz Moska</a></strong></span>.
 
+## Documentation
+
+Full documentation and user guide on [Wiki](https://github.com/mutobo/SandboxDatabaseManager/wiki).
 
 ## Donation
 
