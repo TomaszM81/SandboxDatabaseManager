@@ -319,7 +319,7 @@ namespace SandboxDatabaseManager.Controllers
             List<SelectListItem> restorePermissionServerList = new List<SelectListItem>();
             foreach (var serverData in DatabaseServers.Instance.ItemsList.OrderBy(item => item.Name))
             {
-                if (!UserPermissions.Instance.UserSpecificPermissions[HttpContext.Request.LogonUserIdentity.Name.ToUpper()].RestoreToServerList.Contains(serverData.Name))
+                if (!UserPermissions.Instance.UserSpecificPermissions[HttpContext.Request.LogonUserIdentity.Name.ToUpper()].BackupToDatabaseServerList.Contains(serverData.Name))
                     continue;
 
                 // skip this item if the provided backup file path is empty
