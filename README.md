@@ -20,7 +20,7 @@ Full documentation and user guide on [Wiki](https://github.com/mutobo/SandboxDat
 
 ## Donation
 
-If you like you can support **Sandbox Database Manager** be making a PayPal donation.<br/><br/>
+If you like you can support **Sandbox Database Manager** by making a PayPal donation.<br/><br/>
 <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=SLJC2UZCT4DK4&lc=AL&item_name=Tomasz%20Moska&item_number=Sandbox%20Database%20Manager&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted"><img src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" alt="[paypal]" /></a>
 
 ## License
