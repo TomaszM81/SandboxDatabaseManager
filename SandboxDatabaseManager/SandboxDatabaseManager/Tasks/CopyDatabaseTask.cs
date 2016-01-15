@@ -102,7 +102,9 @@ namespace SandboxDatabaseManager.Tasks
                                 commandRestore.Parameters.Add(new SqlParameter("@OriginatingServer", _sourceDatabaseServer));
                                 commandRestore.Parameters.Add(new SqlParameter("@OriginatingDatabaseName", _sourceDatabaseName));
                                 commandRestore.Parameters.Add(new SqlParameter("@DatabaseComment", String.IsNullOrWhiteSpace(_databaseComment) ? DBNull.Value : (object)_databaseComment));
-
+                                commandRestore.Parameters.Add(new SqlParameter("@BackupTypeDescription", "DATABASE"));
+                                commandRestore.Parameters.Add(new SqlParameter("@RestoreWithRecovery", true));
+                                
                                 conn.FireInfoMessageEventOnUserErrors = true;
                                 conn.InfoMessage += new SqlInfoMessageEventHandler(connInfoMessage);
                                 conn.Open();
