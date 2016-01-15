@@ -87,18 +87,19 @@ namespace SandboxDatabaseManager.Tasks
                 if (value > TaskStatus.NotStarted && StartDate == default(DateTime))
                     StartDate = DateTime.Now;
 
-                if (value > TaskStatus.Running && EndDate == default(DateTime))
-                {
-                    Task.Run(() => DatabaseContext.InsertTaskHistory(this));
-                    EndDate = DateTime.Now;
-                }
-                    
-
                 if (value > _status)
                 {
                     DiscardedFromStatsReporting = false;
                     _status = value;
-                    FireOnTaskStatusChanged( Owner, ID, value);
+
+                    if (value > TaskStatus.Running && EndDate == default(DateTime))
+                    {
+                        EndDate = DateTime.Now;
+                        Task.Run(() => DatabaseContext.InsertTaskHistory(this));
+                    }
+
+                    DiscardedFromStatsReporting = false;
+                    FireOnTaskStatusChanged(Owner, ID, value);
                 }
             }
 
