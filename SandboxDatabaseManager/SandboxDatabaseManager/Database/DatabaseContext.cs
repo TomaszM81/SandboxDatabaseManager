@@ -56,15 +56,22 @@ namespace SandboxDatabaseManager.Database
                         list = DatabaseServers.Instance.ItemsList.Where(server => UserPermissions.Instance.UserSpecificPermissions[indexDatabasesInContextOfUser].CopyAndSearchFromDatabaseSeverList.Contains(server.Name)).ToList();
                     }
 
-                }else
+                }else if(databaseOwner != null)
                 {
+                    databaseOwner = databaseOwner.ToUpper();
                     if (databaseServerFilter != "All Servers")
                     {
+                        if (!UserPermissions.Instance.UserSpecificPermissions[databaseOwner].RestoreToServerList.Contains(databaseServerFilter))
+                        {
+                            var data = new DataSet();
+                            return data;
+                        }
+
                         list = DatabaseServers.Instance.ItemsList.AsQueryable().Where(item => String.Compare(item.Name, databaseServerFilter, true) == 0).ToList();
                     }
                     else
                     {
-                        list = DatabaseServers.Instance.ItemsList;
+                        list = DatabaseServers.Instance.ItemsList.Where(server => UserPermissions.Instance.UserSpecificPermissions[databaseOwner].RestoreToServerList.Contains(server.Name)).ToList();
                     }
                 }
 
