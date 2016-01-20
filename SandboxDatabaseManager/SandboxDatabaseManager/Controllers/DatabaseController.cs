@@ -22,9 +22,7 @@ namespace SandboxDatabaseManager.Controllers
         {
             DataSet result = await Task<DataSet>.Factory.StartNew(() =>
             {
-                databaseServerFilter = databaseServerFilter ?? DatabaseServers.Instance.ItemsList.First(item => item.IsPrimary).Name;
-
-
+                
                 if (UserPermissions.Instance.UserSpecificPermissions[User.Identity.Name.ToUpper()].BackupToDatabaseServerList.Count == 0)
                 {
                     // There is nowhere to backup this database to so the list of permissions will be empty at best
@@ -35,7 +33,9 @@ namespace SandboxDatabaseManager.Controllers
                     ViewBag.ServersWithBackupPermission = UserPermissions.Instance.UserSpecificPermissions[User.Identity.Name.ToUpper()].BackupFromDatabaseServerList;
                 }
 
-                ViewBag.DatabaseServerList = DatabaseServers.Instance.ItemsList.Where(server => UserPermissions.Instance.UserSpecificPermissions[User.Identity.Name.ToUpper()].CopyAndSearchFromDatabaseSeverList.Contains(server.Name)).OrderBy(item => item.Name).Select(item => item.Name).Union(new string[] { "All Servers" }).ToList();
+                ViewBag.DatabaseServerList = UserPermissions.Instance.UserSpecificPermissions[User.Identity.Name.ToUpper()].CopyAndSearchFromDatabaseSeverList.OrderBy(item => item).Union(new string[] { "All Servers" }).ToList();
+                databaseServerFilter = databaseServerFilter ?? (UserPermissions.Instance.UserSpecificPermissions[User.Identity.Name.ToUpper()].CopyAndSearchFromDatabaseSeverList.Count > 0 ? UserPermissions.Instance.UserSpecificPermissions[User.Identity.Name.ToUpper()].CopyAndSearchFromDatabaseSeverList.OrderBy(item => item).First() : null); 
+
                 ViewBag.PreselectedDatabaseServer = databaseServerFilter;
                 ViewBag.DatabaseSerachKey = databaseNameFilter;
 
