@@ -21,9 +21,6 @@ namespace SandboxDatabaseManager.Controllers
         {
             DataSet result = await Task<DataSet>.Factory.StartNew(() =>
             {
-
-                databaseServerFilter = databaseServerFilter ?? DatabaseServers.Instance.ItemsList.First(item => item.IsPrimary).Name;
-
                 if (UserPermissions.Instance.UserSpecificPermissions[User.Identity.Name.ToUpper()].BackupToDatabaseServerList.Count == 0)
                 {
                     // There is nowhere to backup this database to so the list of permissions will be empty at best
@@ -34,7 +31,8 @@ namespace SandboxDatabaseManager.Controllers
                     ViewBag.ServersWithBackupPermission = UserPermissions.Instance.UserSpecificPermissions[User.Identity.Name.ToUpper()].BackupFromDatabaseServerList;
                 }
 
-                ViewBag.DatabaseServerList = DatabaseServers.Instance.ItemsList.OrderBy(item => item.Name).Select(item => item.Name).Union(new string[] { "All Servers" }).ToList();
+                ViewBag.DatabaseServerList = UserPermissions.Instance.UserSpecificPermissions[User.Identity.Name.ToUpper()].RestoreToServerList.OrderBy(item => item).Union(new string[] { "All Servers" }).ToList();
+                databaseServerFilter = databaseServerFilter ?? (UserPermissions.Instance.UserSpecificPermissions[User.Identity.Name.ToUpper()].RestoreToServerList.Count > 0 ? UserPermissions.Instance.UserSpecificPermissions[User.Identity.Name.ToUpper()].RestoreToServerList.OrderBy(item => item).First() : null);
                 ViewBag.PreselectedDatabaseServer = databaseServerFilter;
                 ViewBag.DatabaseSerachKey = databaseNameFilter;
 
@@ -189,6 +187,9 @@ namespace SandboxDatabaseManager.Controllers
             List<string> userList = new List<string>();
             foreach(var user in UserPermissions.Instance.UserSpecificPermissions)
             {
+                if (user.Key == User.Identity.Name.ToUpper())
+                    continue;
+                    
                 if (user.Value.RestoreToServerList.Contains(model.DatabaseServer))
                     userList.Add(user.Key);
             }
