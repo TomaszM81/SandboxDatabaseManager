@@ -116,14 +116,7 @@ namespace SandboxDatabaseManager.Worker
                 }
 
 
-                
-
-
-
-
                 CurrentStats = stats;
-
-
 
                 try
                 {
@@ -160,52 +153,78 @@ namespace SandboxDatabaseManager.Worker
                     _lastRemoveOldCounterDataEach = DateTime.Now;
                     Task.Run(() =>
                     {
-                        _section.EnterWriteLock();
+                       
                         try
                         {
-                            _countersDataMinDates = Database.DatabaseContext.GetCountersDataMinDates();
+                            Database.DatabaseContext.RemoveOldDataFromDB();
+
+                            _section.EnterWriteLock();
+                            try
+                            {
+                                _countersDataMinDates = Database.DatabaseContext.GetCountersDataMinDates();
+                            }
+                            finally
+                            {
+                                _section.ExitWriteLock();
+                            }
+                            
                         }
                         catch (Exception ex) { Log.Error(ex); }
-                        finally
-                        {
-                            _section.ExitWriteLock();
-                        }
-
                     });
                 }
 
 
                 if ((DateTime.Now - _lastMaxStored) > _storeCounterDataEach)
                 {
-                    var statsToPass = _statsToStore;
-                    Task.Run(() =>
+                    DataTable dtResults = new DataTable();
+                    _section.EnterReadLock();
+                    try
                     {
+
+                        DataView dv = new DataView(_statsToStore);
+                        dv.RowFilter = "CounterValueDate > '" + _lastMaxStored.ToString("o") + "'";
+                        dtResults = dv.ToTable();
+                    }
+                    finally
+                    {
+                        _section.ExitReadLock();
+                    }
+
+                    
+
+                    if (dtResults.Rows.Count > 0)
+                    {
+
+                        _lastMaxStored = (DateTime)dtResults.Compute("MAX(CounterValueDate)", null);
+
+                        Task.Run(() =>
+                        {
+                           
+                            try
+                            {
+                                Database.DatabaseContext.StoreCountersData(dtResults);
+                            }
+                            catch (Exception ex) { Log.Error(ex); }
+
+                        });
+
+
                         _section.EnterWriteLock();
                         try
                         {
-                            DataView dv = new DataView(_statsToStore);
-                            dv.RowFilter = "CounterValueDate > '" + _lastMaxStored.ToString("o") + "'";
-                            DataTable dtResults = dv.ToTable();
-                            if (dtResults.Rows.Count > 0)
-                            {
-                                _lastMaxStored = (DateTime)dtResults.Compute("MAX(CounterValueDate)", null);
-                                Database.DatabaseContext.StoreCountersData(dtResults);
-                                _countersDataMinDates = Database.DatabaseContext.GetCountersDataMinDates();
 
-                                string removeOlderThan = _lastMaxStored.AddHours(-1).ToString("s");
-                                foreach (var row in _statsToStore.Select("CounterValueDate <= '" + removeOlderThan + "'"))
-                                {
-                                    _statsToStore.Rows.Remove(row);
-                                }
+                            string removeOlderThan = _lastMaxStored.AddHours(-1).ToString("s");
+                            foreach (var row in _statsToStore.Select("CounterValueDate <= '" + removeOlderThan + "'"))
+                            {
+                                _statsToStore.Rows.Remove(row);
                             }
-                        }
-                        catch (Exception ex) { Log.Error(ex); }
-                        finally
+                        }finally
                         {
                             _section.ExitWriteLock();
                         }
 
-                    });
+                        
+                    }
 
                 }
 
@@ -295,13 +314,30 @@ namespace SandboxDatabaseManager.Worker
         }
         public DateTime GetCounterDataMinDate(string serverName, string counterName)
         {
+
+            if (this._countersDataMinDates == null)
+            {
+                _section.EnterWriteLock();
+                try
+                {
+                    if (_countersDataMinDates == null)
+                        _countersDataMinDates = Database.DatabaseContext.GetCountersDataMinDates();
+                }
+                finally
+                {
+                    _section.ExitWriteLock();
+
+                }
+            }
+
             _section.EnterReadLock();
             try
             {
-                if (this._countersDataMinDates == null)
-                    return DateTime.Now;
 
-                var data = _countersDataMinDates.Rows.Cast<DataRow>().First(row => String.Compare(row["ServerFriendlyName"].ToString(), serverName, true) == 0 && String.Compare(row["CounterFriendlyName"].ToString(), counterName, true) == 0);
+                var data = _countersDataMinDates.Rows.Cast<DataRow>().FirstOrDefault(row => String.Compare(row["ServerFriendlyName"].ToString(), serverName, true) == 0 && String.Compare(row["CounterFriendlyName"].ToString(), counterName, true) == 0);
+
+                if (data == null)
+                    return DateTime.Now;
 
                 return (DateTime)data["MinCounterValueDate"];
 

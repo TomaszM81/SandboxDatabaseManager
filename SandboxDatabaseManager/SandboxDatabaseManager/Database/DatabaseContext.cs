@@ -886,9 +886,6 @@ namespace SandboxDatabaseManager.Database
             try
             {
 
-
-
-
                 DatabaseServerInfo server = DatabaseServers.Instance.ItemsList.First(item => item.IsPrimary == true);
 
                 try
@@ -955,6 +952,40 @@ namespace SandboxDatabaseManager.Database
             }
 
             return result;
+
+        }
+
+        public static void RemoveOldDataFromDB()
+        {
+            try
+            {
+
+                DatabaseServerInfo server = DatabaseServers.Instance.ItemsList.First(item => item.IsPrimary == true);
+
+                try
+                {
+
+                    using (SqlConnection conn = new SqlConnection(server.ConnectionString))
+                    {
+                        var command = conn.CreateCommand();
+                        command.CommandType = CommandType.StoredProcedure;
+                        command.CommandText = "dbo.DeleteOldCounterData";
+                        command.CommandTimeout = 900;
+                        command.ExecuteNonQuery();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(String.Format("Problem accessing server: {0}.", server.Name), ex);
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+            }
+
 
         }
 
