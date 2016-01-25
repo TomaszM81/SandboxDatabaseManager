@@ -52,7 +52,7 @@
             <tr><td colspan="100" style="height:7px"></td></tr>
             <tr>
                 <td></td>
-                <td class="padd-10-left" align="right" style="height:8px"><input id="submit" type="submit" class="btn-frontend btn-default" value="List Backup Files" /></td>
+                <td class="padd-10-left" align="right" style="height:8px"><button id="submit" type="submit" class="btn-frontend btn-default">List Backup Files</button></td>
             </tr>
         </table>
     }
@@ -278,14 +278,15 @@
 
         };
 
-
         function OnCompleteBackupFilesPool(request, status) {
-            $('#submit').val("List Backup Files");
+            var item = document.getElementById("submit");
+            item.innerHTML = 'List Databases';
             prepareTable();
         }
 
         function OnBegin(request, status) {
-            $('#submit').val("Loading...");
+            var item = document.getElementById("submit");
+            item.innerHTML = '<span id="animation" class="glyphicon glyphicon-refresh spinning"></span>&nbsp;Loading...';
         }
 
         $(prepareTable());
