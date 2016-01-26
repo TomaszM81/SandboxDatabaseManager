@@ -17,7 +17,14 @@
                 <tr>
                     @foreach (System.Data.DataColumn column2 in @Model.Tables["Databases"].Columns)
                     {
-                        <td>@row[@column2.ColumnName].ToString()</td>
+                        if (@column2.ColumnName == "Created On")
+                        {
+                            <td>@(((DateTime)row[column2.ColumnName]).ToString("yyyy-MM-dd HH:mm:ss"))</td>
+                        }
+                        else
+                        {
+                            <td>@row[column2.ColumnName].ToString()</td>
+                        }
                     }
                 </tr>
             }

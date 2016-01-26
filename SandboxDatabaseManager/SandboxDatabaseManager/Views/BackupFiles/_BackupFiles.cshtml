@@ -17,7 +17,17 @@
             <tr>
                 @foreach (System.Data.DataColumn column2 in @Model.BackupFiles.Columns)
                 {
-                    <td>@row[@column2.ColumnName].ToString()</td>
+                   
+                    if (@column2.ColumnName == "Backup Date")
+                    {
+                        <td>@(((DateTime)row[column2.ColumnName]).ToString("yyyy-MM-dd HH:mm:ss"))</td>
+                    }
+                    else
+                    {
+                        <td>@row[@column2.ColumnName].ToString()</td>
+                    }
+
+
                 }
             </tr>
         }

@@ -22,13 +22,13 @@
             <table>
                 <tr>
                     <td><label>Start Date:</label></td>
-                    <td style ="padding-left:5px">@Model.StartDate</td>
+                    <td style ="padding-left:5px">@Model.StartDate.ToString("yyyy-MM-dd HH:mm:ss")</td>
                 </tr>
                 @if (Model.Finished)
                 {
                     <tr>
                         <td><label>End Date:</label></td>
-                        <td style="padding-left:5px">@Model.EndDate</td>
+                        <td style="padding-left:5px">@Model.EndDate.ToString("yyyy-MM-dd HH:mm:ss")</td>
                     </tr>
                 }
                 <tr>

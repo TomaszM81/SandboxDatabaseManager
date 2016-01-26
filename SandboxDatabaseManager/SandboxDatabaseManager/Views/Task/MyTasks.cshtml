@@ -34,8 +34,8 @@
         {
             <tr>
                 <td>@Html.ActionLink(task.Name, "GetProgress", new { taskGuid = task.ID, noRedirect = true })</td>
-                <td>@task.StartDate</td>
-                <td>@if (task.EndDate != default(DateTime)) {@task.EndDate}</td>
+                <td>@task.StartDate.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                <td>@if (task.EndDate != default(DateTime)) {@task.EndDate.ToString("yyyy-MM-dd HH:mm:ss")}</td>
                 <td>@task.DurationString</td>
                 <td>@if (task.Status == SandboxDatabaseManager.Tasks.TaskStatus.Running){ <text>Running...</text> }else { @task.Status.ToString()}</td>
                 <td>@if (task.Status == SandboxDatabaseManager.Tasks.TaskStatus.Succeeded && task.Result != null) {@Html.ActionLink("View", task.RedirectToAction, task.RedirectToController, new { taskGuid = task.ID }, null)}</td>
