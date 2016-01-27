@@ -151,11 +151,12 @@ namespace SandboxDatabaseManager.Worker
                 if ((DateTime.Now - _lastRemoveOldCounterDataEach) > _removeOldCounterDataEach)
                 {
                     _lastRemoveOldCounterDataEach = DateTime.Now;
-                    Task.Run(() =>
+                    Task.Run(async () =>
                     {
                        
                         try
                         {
+                            await Task.Delay(10000);
                             Database.DatabaseContext.RemoveOldDataFromDB();
 
                             _section.EnterWriteLock();
