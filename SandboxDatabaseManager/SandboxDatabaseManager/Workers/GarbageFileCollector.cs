@@ -33,47 +33,40 @@ namespace SandboxDatabaseManager.Worker
             {
                 try
                 {
+                    List<string> alreadyInvestigated = new List<string>();
 
-                   
 
-                        foreach(var databaseServer in DatabaseServers.Instance.ItemsList)
+                    foreach (var databaseServer in DatabaseServers.Instance.ItemsList)
+                    {
+                        if (Directory.Exists(databaseServer.CopyDatabaseNetworkSharePath))
                         {
-                            if(Directory.Exists(databaseServer.CopyDatabaseNetworkSharePath))
+                            if (alreadyInvestigated.Contains(databaseServer.CopyDatabaseNetworkSharePath))
+                                continue;
+
+                            alreadyInvestigated.Add(databaseServer.CopyDatabaseNetworkSharePath);
+
+                            foreach (var filePath in Directory.GetFiles(databaseServer.CopyDatabaseNetworkSharePath))
                             {
-                                foreach(var filePath in Directory.GetFiles(databaseServer.CopyDatabaseNetworkSharePath))
+
+                                var partial = Path.GetFileNameWithoutExtension(filePath);
+                                var begin = partial.LastIndexOf('_');
+
+
+                                if (begin >= 0 && partial.Length >= begin + 37)
                                 {
+                                    var guidName = partial.Substring(begin + 1, 36).ToUpper();
+                                    bool fileInUse = false;
 
-                                    var partial = Path.GetFileNameWithoutExtension(filePath);
-                                    var begin = partial.LastIndexOf('_');
-
-
-                                    if (begin >= 0 && partial.Length >= begin + 37)
+                                    lock (_sync)
                                     {
-                                        var guidName = partial.Substring(begin + 1, 36).ToUpper();
-                                        bool fileInUse = false;
-
-                                        lock (_sync)
+                                        if (_whileList.Contains(guidName))
                                         {
-                                            if (_whileList.Contains(guidName))
-                                            {
-                                                fileInUse = true;
-                                            }
+                                            fileInUse = true;
                                         }
+                                    }
 
-                                        if (!fileInUse)
-                                        {
-                                            try
-                                            {
-                                                File.Delete(filePath);
-                                            }
-                                            catch (Exception ex)
-                                            {
-                                                Log.Error(String.Format("Error while deleting garbage file: {0}.", filePath), ex);
-                                            }
-                                        }
-
-                                    }else
-                                    { 
+                                    if (!fileInUse)
+                                    {
                                         try
                                         {
                                             File.Delete(filePath);
@@ -82,15 +75,28 @@ namespace SandboxDatabaseManager.Worker
                                         {
                                             Log.Error(String.Format("Error while deleting garbage file: {0}.", filePath), ex);
                                         }
-
                                     }
 
-
+                                }
+                                else
+                                {
+                                    try
+                                    {
+                                        File.Delete(filePath);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Log.Error(String.Format("Error while deleting garbage file: {0}.", filePath), ex);
+                                    }
 
                                 }
-                            }
 
+
+
+                            }
                         }
+
+                    }
 
 
                     await Task.Delay(new TimeSpan(0, 5, 0));
@@ -112,7 +118,7 @@ namespace SandboxDatabaseManager.Worker
             }
         }
 
-     
+
 
         public void AddGUIDToWhiteList(string fileGuid)
         {
@@ -133,6 +139,6 @@ namespace SandboxDatabaseManager.Worker
         }
 
 
-       
-    } 
+
+    }
 }

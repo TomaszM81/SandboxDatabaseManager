@@ -1,4 +1,5 @@
 ﻿using SandboxDatabaseManager.Configuration;
+using SandboxDatabaseManager.Worker;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -54,6 +55,9 @@ namespace SandboxDatabaseManager.Tasks
                     {
                         try
                         {
+
+                            GarbageFileCollector.Instance.AddGUIDToWhiteList(ID);
+
                             var targetServer = DatabaseServers.Instance.ItemsList.First(server => server.Name == _targetDatabaseServer);
                             string outputFileName;
 
@@ -125,6 +129,10 @@ namespace SandboxDatabaseManager.Tasks
                             AppendOutputText(ex.Message);
                             Status = TaskStatus.Failed;
                             Log.Error("Failed to Copy database.", ex);
+                        }
+                        finally
+                        {
+                            GarbageFileCollector.Instance.RemoveGUIDFromWhiteList(ID);
                         }
                     });
             }
