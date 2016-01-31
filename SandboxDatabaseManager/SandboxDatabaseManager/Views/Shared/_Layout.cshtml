@@ -88,13 +88,13 @@
         <!-- Sidebar -->
         <div id="sidebar-wrapper">
             <ul class="sidebar-nav">
-                @foreach (var item in SandboxDatabaseManager.Worker.MonitoringBackgroundWorker.Instance.MyMonitoredServers)
+                @foreach (var item in SandboxDatabaseManager.Worker.MonitoringBackgroundWorker.Instance.MyMonitoredServers.Where(x => x.IsOk == true))
                 {
-                    var statsServer = SandboxDatabaseManager.Worker.MonitoringBackgroundWorker.Instance.CurrentStats.FirstOrDefault(itemInner => itemInner.ServerName == item.Item1);
+                    var statsServer = SandboxDatabaseManager.Worker.MonitoringBackgroundWorker.Instance.CurrentStats.FirstOrDefault(itemInner => itemInner.ServerName == item.Name);
                     if (statsServer != null)
                     {
                        <li>
-                        <table id="@item.Item1" class="stats" >
+                        <table id="@item.Name" class="stats" >
                         <tr><th colspan="3">@statsServer.ServerName</th></tr>
                         @foreach (var counterValue in statsServer.ListOfCounterValues)
                         {

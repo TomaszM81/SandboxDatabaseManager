@@ -19,7 +19,7 @@ namespace SandboxDatabaseManager.Worker
         private static readonly log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private static readonly Lazy<MonitoringBackgroundWorker> _instance = new Lazy<MonitoringBackgroundWorker>(() => new MonitoringBackgroundWorker(GlobalHost.ConnectionManager.GetHubContext<MonitoringHub>().Clients));
         private Task backgroundTask;
-        public List<Tuple<string, SandboxDatabaseManagerServiceClient>> MyMonitoredServers;
+        public List<MonitoredServer> MyMonitoredServers;
         private object sync = new object();
         private List<ServerPerformanceCounterStats> currentStats = new List<ServerPerformanceCounterStats>();
         private TimeSpan _storeCounterDataEach = new TimeSpan(0, 5, 0);
@@ -46,13 +46,13 @@ namespace SandboxDatabaseManager.Worker
 
             SandboxDatabaseManagerServiceClient client;
 
-            MyMonitoredServers = new List<Tuple<string, SandboxDatabaseManagerServiceClient>>();
+            MyMonitoredServers = new List<MonitoredServer>();
             foreach (var serverToMonitor in MonitoredServers.Instance.ItemsList)
             {
                 try
                 {
                     client = new SandboxDatabaseManagerServiceClient("NetTcpBinding_ISandboxDatabaseManagerService", serverToMonitor.RemoteAddress);
-                    MyMonitoredServers.Add(new Tuple<string, SandboxDatabaseManagerServiceClient>(serverToMonitor.FriendlyName, client));
+                    MyMonitoredServers.Add(new MonitoredServer() { Name = serverToMonitor.FriendlyName, Client = client, IsOk = true });
                 }
                 catch (Exception ex)
                 {
@@ -73,24 +73,23 @@ namespace SandboxDatabaseManager.Worker
             {
                 stats = new List<ServerPerformanceCounterStats>();
 
-                List<Tuple<string, SandboxDatabaseManagerServiceClient>> failedRemoteServers = new List<Tuple<string, SandboxDatabaseManagerServiceClient>>();
-
-                Parallel.ForEach(MyMonitoredServers, (serverClinent, LoopState) =>
+              
+                Parallel.ForEach(MyMonitoredServers.Where(x => x.IsOk), (serverClinent, LoopState) =>
                 {
                     try
                     {
-                        var result = serverClinent.Item2.GetPerformanceCounterResult();
+                        var result = serverClinent.Client.GetPerformanceCounterResult();
 
                         lock (sync)
                         {
-                            stats.Add(new ServerPerformanceCounterStats(serverClinent.Item1, result));
+                            stats.Add(new ServerPerformanceCounterStats(serverClinent.Name, result));
                         }
 
                     }
                     catch (Exception ex)
                     {
-                        Log.Error(String.Format("Exception retrieving statistics from remote server name {0}.", serverClinent.Item1), ex);
-                        failedRemoteServers.Add(serverClinent);
+                        Log.Error(String.Format("Exception retrieving statistics from remote server name {0}.", serverClinent.Name), ex);
+                        serverClinent.IsOk = false;
                     }
 
 
@@ -99,19 +98,18 @@ namespace SandboxDatabaseManager.Worker
                 // try to reconstruct clients for monitoring servers
                 SandboxDatabaseManagerServiceClient client;
                 string remoteAddress = "";
-                foreach (Tuple<string, SandboxDatabaseManagerServiceClient> friendlyFailedServers in failedRemoteServers)
+                foreach (var friendlyFailedServers in MyMonitoredServers.Where(x => !x.IsOk))
                 {
                     try
                     {
-                        Log.InfoFormat("Trying to re-establish connection with monitored server: {0}", friendlyFailedServers.Item1);
-                        remoteAddress = MonitoredServers.Instance.GetRemoteAddress(friendlyFailedServers.Item1);
+                        Log.InfoFormat("Trying to re-establish connection with monitored server: {0}", friendlyFailedServers.Name);
+                        remoteAddress = MonitoredServers.Instance.GetRemoteAddress(friendlyFailedServers.Name);
                         client = new SandboxDatabaseManagerServiceClient("NetTcpBinding_ISandboxDatabaseManagerService", remoteAddress);
-                        MyMonitoredServers.Remove(friendlyFailedServers);
-                        MyMonitoredServers.Add(new Tuple<string, SandboxDatabaseManagerServiceClient>(friendlyFailedServers.Item1, client));
+                        friendlyFailedServers.Client = client;
                     }
                     catch (Exception ex)
                     {
-                        Log.Error(String.Format("Failed to re-construct SandboxDatabaseManagerServiceClient for client FriendlyName: {0}, RemotAddress: {1}", friendlyFailedServers.Item1, remoteAddress), ex);
+                        Log.Error(String.Format("Failed to re-construct SandboxDatabaseManagerServiceClient for client FriendlyName: {0}, RemotAddress: {1}", friendlyFailedServers.Name, remoteAddress), ex);
                     }
                 }
 
@@ -374,7 +372,12 @@ namespace SandboxDatabaseManager.Worker
             }
         }
 
-
+        public class MonitoredServer
+        {
+            public string Name {get;set;}
+            public bool IsOk { get; set; }
+            public SandboxDatabaseManagerServiceClient Client { get; set; }
+        }
  
 
     }
