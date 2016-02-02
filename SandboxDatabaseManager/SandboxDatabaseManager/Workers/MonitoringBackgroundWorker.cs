@@ -106,6 +106,7 @@ namespace SandboxDatabaseManager.Worker
                         remoteAddress = MonitoredServers.Instance.GetRemoteAddress(friendlyFailedServers.Name);
                         client = new SandboxDatabaseManagerServiceClient("NetTcpBinding_ISandboxDatabaseManagerService", remoteAddress);
                         friendlyFailedServers.Client = client;
+                        friendlyFailedServers.IsOk = true;
                     }
                     catch (Exception ex)
                     {
