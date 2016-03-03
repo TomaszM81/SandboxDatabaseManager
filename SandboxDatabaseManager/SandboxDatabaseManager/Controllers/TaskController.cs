@@ -68,7 +68,7 @@ namespace SandboxDatabaseManager.Controllers
             return Json(new
             {
                 status = task.Status == TaskStatus.Running ? "Running... " : task.Status.ToString(),
-                output = task.OutputText.Substring(skipOutput),
+                output = task.OutputText.Substring(skipOutput > task.OutputText.Length ? task.OutputText.Length : skipOutput),
                 duration = task.DurationString,
                 redirectToController = task.RedirectToController,
                 redirectToAction = task.RedirectToAction
