@@ -17,13 +17,13 @@ namespace SandboxDatabaseManager.Controllers
         public ActionResult GetCompareDetails(string one = null, string two = null)
         {
 
-            ViewBag.DatabaseServerList = DatabaseServers.Instance.ItemsList.Where(server => UserPermissions.Instance.UserSpecificPermissions[User.Identity.Name.ToUpper()].CopyAndSearchFromDatabaseSeverList.Contains(server.Name)).OrderBy(item => item.Name).Select(item => item.Name).Union(new string[] { "All Servers" }).ToList();
+            ViewBag.DatabaseServerList = DatabaseServers.Instance.ItemsList.Where(server => UserPermissions.Instance.UserSpecificPermissions[User.Identity.Name.ToUpper()].CopyAndSearchFromDatabaseSeverList.Contains(server.Name)).OrderBy(item => item.Name).Select(item => item.Name).ToList();
             return View();
         }
 
         public ActionResult Compare(DatabaseCompareDetails data)
         {
-            ViewBag.DatabaseServerList = DatabaseServers.Instance.ItemsList.Where(server => UserPermissions.Instance.UserSpecificPermissions[User.Identity.Name.ToUpper()].CopyAndSearchFromDatabaseSeverList.Contains(server.Name)).OrderBy(item => item.Name).Select(item => item.Name).Union(new string[] { "All Servers" }).ToList();
+            ViewBag.DatabaseServerList = DatabaseServers.Instance.ItemsList.Where(server => UserPermissions.Instance.UserSpecificPermissions[User.Identity.Name.ToUpper()].CopyAndSearchFromDatabaseSeverList.Contains(server.Name)).OrderBy(item => item.Name).Select(item => item.Name).ToList();
             ViewBag.PreSelectedItem = data.DatabaseServer;
 
             if (data.DatabaseNameToCompare == data.DatabaseNameToCompareAgaints)
