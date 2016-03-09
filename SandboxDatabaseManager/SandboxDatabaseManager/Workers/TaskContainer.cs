@@ -41,7 +41,7 @@ namespace SandboxDatabaseManager.Worker
                     _section.EnterWriteLock();
                     try
                     {
-                        foreach (var groups in _taskList.Where(task => task.Finished).GroupBy(task => task.Owner).Select( item => new { item.Key, tasks = item.OrderBy(task => task.EndDate).ToList() }))
+                        foreach (var groups in _taskList.Where(task => task.Finished).GroupBy(task => task.Owner).Select( item => new { item.Key, tasks = item.OrderByDescending(task => task.EndDate).ToList() }))
                         {
                             for (int i = 15; i < groups.tasks.Count; i++)
                                 _taskList.Remove(groups.tasks[i]);
