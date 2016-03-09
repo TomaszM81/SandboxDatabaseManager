@@ -209,7 +209,7 @@ namespace SandboxDatabaseManager.Tasks
             command.Parameters.AddWithValue("@RedirectToAction", RedirectToAction);
             command.Parameters.AddWithValue("@Description", Description);
             command.Parameters.AddWithValue("@StartDate", StartDate);
-            command.Parameters.AddWithValue("@EndDate", StartDate);
+            command.Parameters.AddWithValue("@EndDate", EndDate);
         }
 
     }
