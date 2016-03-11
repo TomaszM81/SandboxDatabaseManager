@@ -73,6 +73,7 @@ WHERE NOT EXISTS (SELECT 1 FROM dbo.RestrictedDatabases AS rd WHERE rd.DatabaseN
 	AND d.collation_name is NOT NULL -- database only if the collation_name column is not null
 	--AND d.state = 0 --ONLINE
 	AND (d.name LIKE @DatabaseNameFilter OR @DatabaseNameFilter is null)
+	AND (@DatabaseOwner IS NULL OR d1.DatabaseOwner = @DatabaseOwner)
 
 
 --UPDATE dbo.Configuration set VersionColumnSchemaTemplate = '[Data_Ver] NVARCHAR(10) NULL, [Schema_Ver] NVARCHAR(10) NULL';
@@ -112,7 +113,7 @@ BEGIN
 END
 
 
-SELECT * FROM #ListOfDatabases WHERE [Owner] = @DatabaseOwner or @DatabaseOwner is NULL ORDER by [Database Name];
+SELECT * FROM #ListOfDatabases ORDER by [Database Name];
 
 IF @DatabaseOwner IS NOT NULL
 BEGIN
