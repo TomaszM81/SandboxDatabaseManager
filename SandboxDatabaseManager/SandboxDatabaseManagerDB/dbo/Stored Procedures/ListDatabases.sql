@@ -103,9 +103,9 @@ BEGIN
 			BREAK
 
 	     IF @Debug = 0
-		  SET @Statement += 'USE ' + QUOTENAME(@DatabaseName) + '; BEGIN TRY EXEC(''' + @VersionColumnUpdateStatementPart + ' WHERE ID = ' + CAST(@CurrentID AS VARCHAR(10)) + ''') END TRY BEGIN CATCH END CATCH; ' + CHAR(13) + CHAR(10)
+		  SET @Statement += 'BEGIN TRY EXEC(''USE ' + QUOTENAME(@DatabaseName) + '; ' + @VersionColumnUpdateStatementPart + ' WHERE ID = ' + CAST(@CurrentID AS VARCHAR(10)) + ''') END TRY BEGIN CATCH END CATCH; ' + CHAR(13) + CHAR(10)
 	     ELSE
-	       SET @Statement += 'USE ' + QUOTENAME(@DatabaseName) + '; BEGIN TRY EXEC(''' + @VersionColumnUpdateStatementPart + ' WHERE ID = ' + CAST(@CurrentID AS VARCHAR(10)) + ''') END TRY BEGIN CATCH SELECT @ErrorMessage = ERROR_MESSAGE(); RAISERROR(''USE ' + QUOTENAME(@DatabaseName) + '; ' + @VersionColumnUpdateStatementPart + ' WHERE ID = ' + CAST(@CurrentID AS VARCHAR(10)) + ''', 0, 1); RAISERROR(@ErrorMessage, 16, 1); END CATCH; ' + CHAR(13) + CHAR(10)
+	       SET @Statement += 'BEGIN TRY EXEC(''USE ' + QUOTENAME(@DatabaseName) + '; ' + @VersionColumnUpdateStatementPart + ' WHERE ID = ' + CAST(@CurrentID AS VARCHAR(10)) + ''') END TRY BEGIN CATCH SELECT @ErrorMessage = ERROR_MESSAGE(); RAISERROR(''USE ' + QUOTENAME(@DatabaseName) + '; ' + @VersionColumnUpdateStatementPart + ' WHERE ID = ' + CAST(@CurrentID AS VARCHAR(10)) + ''', 0, 1); RAISERROR(@ErrorMessage, 16, 1); END CATCH; ' + CHAR(13) + CHAR(10)
 
 	END
 	EXEC (@Statement);
