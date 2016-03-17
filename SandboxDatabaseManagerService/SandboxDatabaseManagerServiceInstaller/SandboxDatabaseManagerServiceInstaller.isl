@@ -3957,7 +3957,7 @@ QwBEAF8AUgBPAE0AAQBFAHgAcAByAGUAcwBzAA==
 		<row><td>ISTheme</td><td>InstallShield Blue.theme</td></row>
 		<row><td>ISUSLock</td><td>{01F69AF0-5392-4FA5-AD09-CAA6D3AAF7C7}</td></row>
 		<row><td>ISUSSignature</td><td>{B84E1F5B-B51E-411A-BEE8-655744FD616A}</td></row>
-		<row><td>ISVisitedViews</td><td>viewAssistant,viewProject,viewAppFiles,viewServices,viewTextMessages,viewSystemSearch,viewRelease,viewISToday,viewUI</td></row>
+		<row><td>ISVisitedViews</td><td>viewAssistant,viewProject,viewAppFiles,viewServices,viewTextMessages,viewSystemSearch,viewRelease,viewISToday,viewUI,viewLearnMore</td></row>
 		<row><td>Limited</td><td>1</td></row>
 		<row><td>LockPermissionMode</td><td>1</td></row>
 		<row><td>MsiExecCmdLineOptions</td><td/></row>
@@ -4331,7 +4331,7 @@ QwBEAF8AUgBPAE0AAQBFAHgAcAByAGUAcwBzAA==
 		<row><td>PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS</td><td>##IDS_PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS##</td><td/></row>
 		<row><td>ProductCode</td><td>{1ABD5FF9-6C85-4201-BBEA-6528193936AE}</td><td/></row>
 		<row><td>ProductName</td><td>SandboxDatabaseManagerService</td><td/></row>
-		<row><td>ProductVersion</td><td>1.0.0000</td><td/></row>
+		<row><td>ProductVersion</td><td>1.8.0000</td><td/></row>
 		<row><td>ProgressType0</td><td>install</td><td/></row>
 		<row><td>ProgressType1</td><td>Installing</td><td/></row>
 		<row><td>ProgressType2</td><td>installed</td><td/></row>
