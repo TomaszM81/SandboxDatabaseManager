@@ -841,7 +841,7 @@ namespace SandboxDatabaseManager.Database
                             RedirectOnlyResult = null,
                             RedirectToAction = myReader["RedirectToAction"] == DBNull.Value ? null : (string)myReader["RedirectToAction"],
                             RedirectToController = myReader["RedirectToController"] == DBNull.Value ? null : (string)myReader["RedirectToController"],
-                            StartDate = (DateTime)myReader["EndDate"],
+                            StartDate = (DateTime)myReader["StartDate"],
                             Status = (Tasks.TaskStatus)myReader["Status"]
                         };
 
