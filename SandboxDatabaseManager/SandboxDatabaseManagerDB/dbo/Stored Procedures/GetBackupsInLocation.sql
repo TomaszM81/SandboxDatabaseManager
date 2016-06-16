@@ -57,7 +57,7 @@ DECLARE @FilesTable as TABLE(ID INT PRIMARY KEY, FilePath NVARCHAR(MAX))
 
 
 INSERT INTO @FilesTable
-select ROW_NUMBER() OVER (order by (SELECT 1)), @LocationToInvestigate + Name from @FolderStructureFinal WHERE IsFile = 1 and Name LIKE '%.b[ac]k' AND Name like @FileNameFilter + '%'
+select ROW_NUMBER() OVER (order by (SELECT 1)), @LocationToInvestigate + Name from @FolderStructureFinal WHERE IsFile = 1 and Name LIKE '%.b[ac]k' AND Name like '%' + @FileNameFilter + '%'
 
 
 /*******************************************************************************************************************************/
