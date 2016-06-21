@@ -273,7 +273,9 @@ RAISERROR('',0,0) WITH NOWAIT
 if @RestoreWithRecovery = 1
 BEGIN
 
-SET @Statement =  'ALTER AUTHORIZATION on DATABASE::' + QUOTENAME(@DatabaseName) + ' TO [sa]; ' + CHAR(13) + CHAR(10)
+SET @Statement =  'ALTER AUTHORIZATION on DATABASE::' + QUOTENAME(@DatabaseName) + ' TO [sa]; ' + CHAR(13) + CHAR(10) +
+		  'ALTER DATABASE ' + QUOTENAME(@DatabaseName) + ' SET  READ_WRITE WITH NO_WAIT; ' + CHAR(13) + CHAR(10) +
+		  'ALTER DATABASE ' + QUOTENAME(@DatabaseName) + '  SET  MULTI_USER WITH NO_WAIT ' + CHAR(13) + CHAR(10)
 
 if @ChangeRecoveryToSimple = 1
 BEGIN
