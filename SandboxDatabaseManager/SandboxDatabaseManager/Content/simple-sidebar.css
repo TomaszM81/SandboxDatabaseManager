@@ -15,7 +15,7 @@
 }
 
 #wrapper.toggled {
-    padding-left: 200px;
+    padding-left: 210px;
 }
 
 #wrapper.slow_toggle {
@@ -34,10 +34,10 @@
 #sidebar-wrapper {
     z-index: 1000;
     position: fixed;
-    left: 200px;
+    left: 210px;
     width: 0;
     height: 100%;
-    margin-left: -200px;
+    margin-left: -210px;
     overflow-y: auto;
     /*background: #222222;*/
     background-color:#2A5E9D;
@@ -76,7 +76,7 @@
 .sidebar-nav {
     position: absolute;
     top: 0;
-    width: 200px;
+    width: 210px;
     margin: 0;
     padding: 0;
     list-style: none;
@@ -123,7 +123,7 @@
 
 @media(min-width:768px) {
     #wrapper {
-        padding-left: 200px;
+        padding-left: 210px;
     }
 
     #wrapper.toggled {
@@ -131,7 +131,7 @@
     }
 
     #sidebar-wrapper {
-        width: 200px;
+        width: 210px;
     }
 
     #wrapper.toggled #sidebar-wrapper {
